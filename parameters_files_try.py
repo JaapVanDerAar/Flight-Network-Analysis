@@ -28,13 +28,13 @@ print(df_airports.info())
 
 #%% Unique number of values in both files
 
-print('Routes file parameters \n')
+print('df_routes unique values per variable \n')
 for column in df_routes.columns:
     print(f'{column} = {len(df_routes[column].unique())}')
 
 print('\n\n')
 
-print('Airports file parameters \n')
+print('df_airports unique values per variable \n')
 for column in df_airports.columns:
     print(f'{column} = {len(df_airports[column].unique())}')
 # Airport ID is the same across files
