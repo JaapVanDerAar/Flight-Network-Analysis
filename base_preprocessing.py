@@ -58,7 +58,67 @@ for column in df_airports.columns:
     print(f'{column} = {len(df_airports[column].unique())}')
     
 
-#%% Add the airports file to the routes file based on airport source ID - Try 1
+
+#%% Add the airports file to the routes file based on airport source ID 
+### This part can take 10 minutes, because it iterates over al rows, only do once,
+### Not necessary to do more often if routes_and_corresponding_airports.csv is created
+
+# import regular expression package
+import re
+
+# create empty new dataframe, but with the columns of the original df_airports
+df_new = pd.DataFrame(columns=["source airport ID", "name", "city", "country", "IATA", "ICAO", "lattitude", "longitude", "altitude", "timezone", "DST", "Tz Olson format", "type", "source"])
+# iterate over all rows of df_routes
+for index, row in df_routes.iterrows():
+    # check if source airport ID in df_routes is known, if so it is a number
+    if bool(re.search('[0-9]+', row[3])) == True:
+        # change from string to integer and give variable name
+        src_airport_id = int(row[3])
+        # look for the corresponding source airport ID in df_airports and get this row
+        a = df_airports.loc[df_airports['source airport ID'] == src_airport_id]
+        # append df_new with the data of that row of df_airports
+        df_new = df_new.append({
+                "source airport ID": a.iloc[0,0], 
+                "name": a.iloc[0,1],
+                "city": a.iloc[0,2],
+                "country": a.iloc[0,3],
+                "IATA": a.iloc[0,4],
+                "ICAO": a.iloc[0,5], 
+                "lattitude": a.iloc[0,6], 
+                "longitude": a.iloc[0,7],
+                "altitude": a.iloc[0,8],
+                "timezone": a.iloc[0,9],
+                "DST": a.iloc[0,10],
+                "Tz Olson format": a.iloc[0,11],
+                "type": a.iloc[0,12],
+                "source": a.iloc[0,13]
+                }, ignore_index=True)
+    # but if the source airport ID is unknown, fill the row with NaN
+    else: 
+        df_new = df_new.append({
+                "source airport ID": "NaN", 
+                "name": "NaN",
+                "city": "NaN",
+                "country": "NaN",
+                "IATA": "NaN",
+                "ICAO": "NaN", 
+                "lattitude": "NaN", 
+                "longitude": "NaN",
+                "altitude": "NaN",
+                "timezone": "NaN",
+                "DST": "NaN",
+                "Tz Olson format": "NaN",
+                "type": "NaN",
+                "source": "NaN"
+                }, ignore_index=True)
+
+# create new dataframe, where the df_new is added as columns to the df_routes     
+df_routes_and_airports = pd.concat([df_routes, df_new], axis=1)
+
+# save combined dataframe as csv file
+df_routes_and_airports.to_csv('routes_and_corresponding_airports.csv')
+
+#%% Add the airports file to the routes file based on airport source ID - Try 1 - save for now
 
 # based on the airport ID
 # routes as main 
@@ -84,33 +144,7 @@ for row in df_merged:
     
 # next step: find the row index where df_airports == df_routes.iloc[i,3]
 # and integrate in for loop
-#%% Add the airports file to the routes file based on airport source ID - Try 2
-# in theory:
-    # for every row in the file
-    # look at every row in the other file
-    # to find the matching source airport ID
-    # find the matching airport source airport ID in df_airports
-    # add all rows of the df_airports to the file
-
-import re
- 
-# iterate through all rows
-for index, row in df_routes.iterrows():
-    # check if source airport ID in df_routes is a number
-    if bool(re.search('[0-9]+', row[3])) == True:
-        # change from string to integer and name
-        src_airport_id = int(row[3])
-        # look for the corresponding source airport ID in df_airports and get this row
-        a = df_airports.loc[df_airports['source airport ID'] == src_airport_id]
-        # This should work, only two steps are still missing:
-        # OR 1) .assign 'a' to the right row 
-        # OR 1) write all 'a' to a new CSV file
-        #    2) create an 'else' with all NaN and also write these to the file
-        #    3) use .join to add new file to the old one
-    
-       
-
-#%%
+#%% Other try: just left it here for now
 # different way: use merge function of pandas    
 # we need a left outer join of our dataframes (routes = left, and we want to all routes columns)
 
