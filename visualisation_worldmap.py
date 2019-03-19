@@ -38,9 +38,17 @@ G.add_edge(3329,6341)
 G.add_edge(3329,5811)
 G.add_edge(3329,5811)
 
+connections = ()
+edges = [] 
+
+# define edges as possible correspondence between source airport ID and destination ID
+for node in nodes:
+    edges = (aiport_source_uniq, airport_dest_uniq) 
+    
+G.add_edges_from([(airport_source_uniq, airport_dest_uniq)])
 # later:
-#define edges as a list of tuples
-#G.add_edges_from(edges)
+#define edges as a list of tuples (examples)
+#G.add_edges_from([(2965,2990),(2952,6156).(2990,6156)])
 
 # visualize graph (takes a while)
 nx.draw(G,with_labels=True)
