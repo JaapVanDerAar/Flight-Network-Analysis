@@ -1,31 +1,80 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Mar 12 22:27:25 2019
-
-@author: Kirsten
-"""
-
 # MAIN PROGRAM
 # handling the interaction with the user
 
-# import necessary packages 
-# e.g. import networkx as nx
-print("To do: import necessary packages")
+#%% import self-defined modules
 
-# load data sets
-print("To do: load flight route data set.")
-print("To do: load airports data set.")
+import base_preprocessing as bpp
 
-# data preparation and creation of network graphs
+#%% later/optional packages
+#import networkx as nx 
+#import matplotlib as mpl
+# deepgraph?
+# ggraph?
+
+#%% load data sets
+
+# define filenames
+filename_routes = "routes.csv"
+filename_airports = "airports-extended.csv"
+
+# load routes and airports data in seperate dataframes
+try:
+    df_routes = bpp.load_data_routes_from_file(filename_routes)
+except FileNotFoundError:
+    print("file not found, please check filename_routes and current directory")
+except Exception as err: 
+    print("Something went wrong")
+    print(err)
+    
+try:
+    df_airports = bpp.load_data_airports_from_file(filename_airports)
+except FileNotFoundError:
+    print("file not found, please check filename_routes and current directory")
+except Exception as err: 
+    print("Something went wrong")
+    print(err)   
+    
+
+
+#%% Inspect data
+
+# print headers of the columns
+print(df_routes.columns)
+print(df_airports.columns)
+
+# Unique number of values in both files
+# print unique values of df_routes
+print('df_routes unique values per variable \n')
+for column in df_routes.columns:
+    print(f'{column} = {len(df_routes[column].unique())}')
+
+print('\n\n')
+
+#print unique values of df_airports
+print('df_airports unique values per variable \n')
+for column in df_airports.columns:
+    print(f'{column} = {len(df_airports[column].unique())}')
+
+
+#%% Data preprocessing
+    
+# merging of rhe two df's    
+try:
+    df_merged = bpp.merge_dataframes(df_routes, df_airports)
+except Exception as err: 
+    print("Something went wrong")
+    print(err)    
+
+
+#%% Creation of network graphs
 print("To do: create total network graph.")
 print("To do: create network graph per airline.")
 
-# inspect stats
-# e.g. number of nodes and edges
-print("To do: use the nx.info function")
 
-# run program in loop until user chooses to exit
+
+
+
+#%% run program in loop until user chooses to exit
 while True:   
 # print options to user:
     choice = input("""What do you want to do?
@@ -94,4 +143,5 @@ while True:
 # biggest hub per airline, a list of airlines sorted by 'connectedness' etc.
 # opportunities.py is a module that returns list and visualisation of routes 
 # that are less used in the world's flight network .         
+    
 
