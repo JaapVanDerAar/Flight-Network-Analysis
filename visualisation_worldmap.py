@@ -7,6 +7,32 @@ import networkx as nx
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
+
+#%% Visualisation binary graph - use DiGraph() for directed
+
+# Load smaller csv file for testing
+df_merged_small = pd.read_csv('df_merged_small.csv', sep=',')
+
+# Set variable 'graph', use nx.from_pandas_edgelist
+# https://networkx.github.io/documentation/networkx-1.10/reference/generated/networkx.convert_matrix.from_pandas_dataframe.html
+# this link contains several options such as making it a DiGraph()
+# and it can be made weighted by using edge_attr
+graph = nx.from_pandas_edgelist(df_merged_small, source = 'source airport', 
+                                 target = 'destination airport')
+
+# set size of the figue using matplotlib as plt
+plt.figure(figsize = (20,20))
+# Draw graph
+nx.draw_networkx(graph)
+
+# add options to figure
+plt.show()
+
+
+#%% Worldmap 1
+import geopandas as gpd
+from shapely.geometry import Point
+import matplotlib.pyplot as plt
 #%% Create binary graph
 
 # simple try:
@@ -99,23 +125,4 @@ plt.show()
 # probably .unique also holds something like this in python
 
 
-#%% Visualisation binary graph - use DiGraph() for directed
-
-# Load smaller csv file for testing
-df_merged_small = pd.read_csv('df_merged_small.csv', sep=',')
-
-# Set variable 'graph', use nx.from_pandas_edgelist
-# https://networkx.github.io/documentation/networkx-1.10/reference/generated/networkx.convert_matrix.from_pandas_dataframe.html
-# this link contains several options such as making it a DiGraph()
-# and it can be made weighted by using edge_attr
-graph = nx.from_pandas_edgelist(df_merged_small, source = 'source airport', 
-                                 target = 'destination airport')
-
-# set size of the figue using matplotlib as plt
-plt.figure(figsize = (20,20))
-# Draw graph
-nx.draw_networkx(graph)
-
-# add options to figure
-plt.show()
 
