@@ -27,7 +27,6 @@ nx.draw_networkx(graph)
 # add options to figure
 plt.show()
 
-
 #%% Worldmap 1
 import geopandas as gpd
 from shapely.geometry import Point
@@ -60,9 +59,6 @@ list_destAP_ID = selection_uniq_routes["destination airport ID"].tolist()
 # define edges as list of tuples from these lists
 edges = list(zip(list_sourceAP_ID, list_destAP_ID))
 
-<<<<<<< HEAD
-connections = ()
-edges = [] 
 
 # define edges as possible correspondence between source airport ID and destination ID
 for node in nodes:
@@ -72,10 +68,10 @@ G.add_edges_from([(airport_source_uniq, airport_dest_uniq)])
 # later:
 #define edges as a list of tuples (examples)
 #G.add_edges_from([(2965,2990),(2952,6156).(2990,6156)])
-=======
+#=======
 # add edges to graph
 G.add_edges_from(edges)
->>>>>>> upstream/master
+#>>>>>>> upstream/master
 
 # visualize graph (takes a while)
 nx.draw(G,with_labels=True)
@@ -96,7 +92,14 @@ for node in nodes:
 G.add_edges_from([(airport_source_uniq, airport_dest_uniq)])
 # this doesn't work. should have list of tuples as input
 
+#%% defining the biggest airlines 
 
+df_top_airlines = df_merged.groupby(['airline', 'airline ID'])['airline'].agg({"code_count": len}).sort_values("code_count", ascending=False).head(100).reset_index()
+print(df_top_airlines)
+df_biggest_hubs = df_merged.groupby(['source airport'])['city'].agg({"code_count": len}).sort_values("code_count", ascending=False).head(100).reset_index()
+print(df_biggest_hubs)
+df_biggest_hubs_dest = df_merged.groupby(['destination airport'])['city'].agg({"code_count": len}).sort_values("code_count", ascending=False).head(100).reset_index()
+print(df_biggest_hubs_dest)
 #%% How to:
 # create list of unique combinations
 # every unique combination of [soure airport id - destination airport id]
