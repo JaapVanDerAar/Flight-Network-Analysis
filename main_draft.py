@@ -3,6 +3,7 @@
 
 #%% import self-defined modules
 
+import pandas as pd
 import base_preprocessing as bpp
 
 #%% later/optional packages

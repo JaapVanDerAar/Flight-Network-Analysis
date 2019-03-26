@@ -4,9 +4,8 @@
 
 #%%import necessary packages
 import networkx as nx
-import matplotlib as mpl
 import matplotlib.pyplot as plt
-
+import pandas as pd
 
 #%% Visualisation binary graph - use DiGraph() for directed
 

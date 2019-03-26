@@ -1,9 +1,5 @@
 # module for preprocessing the data before analysis and visualisation
 
-#%% Load neccesary packages 
-
-import pandas as pd
-
 #%% Load data
 
 # function to load routes data as dataframe
