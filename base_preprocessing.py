@@ -1,4 +1,5 @@
 # module for preprocessing the data before analysis and visualisation
+import pandas as pd
 
 #%% Load data
 

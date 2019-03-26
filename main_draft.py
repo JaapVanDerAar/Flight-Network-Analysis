@@ -3,7 +3,6 @@
 
 #%% import self-defined modules
 
-import pandas as pd
 import base_preprocessing as bpp
 
 #%% later/optional packages
@@ -67,6 +66,13 @@ except Exception as err:
     print(err)    
 
 
+#%% Here can be the function of visualization on the worldmap
+
+want_visualization = input('Would you like to visualize a network on a map? (y/n) ')
+if want_visualization == 'y':
+    visualization_on_map() # I'll create this one
+    
+    
 #%% Creation of network graphs
 print("To do: create total network graph.")
 print("To do: create network graph per airline.")
