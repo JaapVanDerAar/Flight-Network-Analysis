@@ -29,9 +29,30 @@ plt.show()
 
 
 #%% Worldmap 1
-import geopandas as gpd
+# import necessary packages
+import geopandas
 from shapely.geometry import Point
-import matplotlib.pyplot as plt
+
+# to use the Point function of shapely.geometry, it is necessary to have to coordinates
+# in one variable. So add a tuple of coordinates in de df_merged file
+df_merged_small['Coordinate Points'] = list(zip(df_merged_small['longitude'],
+               df_merged_small['lattitude']))
+
+# make Point of them using .apply(Point)
+df['Coordinate Points'] = df['Coordinates'].apply(Point)
+
+# create geopandas dataframe to plot
+gdf = geopandas.GeoDataFrame(df, geometry='Coordinate Points')
+
+# get a simple world map that has the outlines of the countries. Set as black and white
+world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
+colors_map = world.plot(color='white', edgecolor='black')
+
+# Plot with Points on world map
+gdf.plot(ax=colors_map, color='red')
+plt.show()
+
+
 #%% Create binary graph
 
 # simple try:
