@@ -6,12 +6,14 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
-
-#%% Visualisation binary graph - use DiGraph() for directed
+import numpy as np
+from mpl_toolkits.basemap import Basemap as Basemap
+import matplotlib.lines as mlines
 
 # Load smaller csv file for testing
 df_merged_small = pd.read_csv('df_merged_small.csv', sep=',')
 
+#%% Visualisation binary graph - use DiGraph() for directed
 # Set variable 'graph', use nx.from_pandas_edgelist
 # https://networkx.github.io/documentation/networkx-1.10/reference/generated/networkx.convert_matrix.from_pandas_dataframe.html
 # this link contains several options such as making it a DiGraph()
@@ -45,122 +47,63 @@ gdf = gpd.GeoDataFrame(df_merged_small, geometry='Coordinate Points')
 
 # get a simple world map that has the outlines of the countries. Set as black and white
 world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
-colors_map = world.plot(color='white', edgecolor='black')
+colors_map = world.plot(color='white', edgecolor='black', figsize = (20,20))
 
 # This does not work yet. 
 # Plot with Points on world map
-gdf.plot(ax=colors_map, color='red')
+gdf.plot(ax=colors_map, color='red',)
 plt.show()
 
+#%% Worldmap 1 - full
 
-#%% Create binary graph
+# to use the Point function of shapely.geometry, it is necessary to have to coordinates
+# in one variable. So add a tuple of coordinates in de df_merged file
+df_merged['Coordinate Points'] = list(zip(df_merged['longitude'],
+               df_merged['lattitude']))
 
-# simple try:
+# make Point of them using .apply(Point)
+df_merged['Coordinate Points'] = df_merged['Coordinate Points'].apply(Point)
 
-# create empty graph structure
-G = nx.Graph()
+# create geopandas dataframe to plot
+gdf = gpd.GeoDataFrame(df_merged, geometry='Coordinate Points')
 
-# unique source and destination airports
-airport_source_uniq = df_merged["source airport ID"].unique() #3321 unique source airports
-airport_dest_uniq = df_merged["destination airport ID"].unique() #3327 unique dest airports
+# get a simple world map that has the outlines of the countries. Set as black and white
+world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+colors_map = world.plot(color='white', edgecolor='black', figsize = (20,20))
 
-# define nodes (now: source airports)
-nodes = airport_source_uniq.tolist()
+# This does not work yet. 
+# Plot with Points on world map
+gdf.plot(ax=colors_map, color='red',)
+plt.show()
 
-# add nodes to graph
-G.add_nodes_from(nodes)
-# (Use keywords to update specific node attributes for every node, like size and weight)
+#%% Worldmap 2 
 
-# selection of dataframe with unique combinations of [source airport ID - destination airport ID] 
-selection_uniq_routes = df_merged.drop_duplicates(subset=["source airport ID", "destination airport ID"])
-
-# create lists of source en dest airport IDs
-list_sourceAP_ID = selection_uniq_routes["source airport ID"].tolist()
-list_destAP_ID = selection_uniq_routes["destination airport ID"].tolist()
-
-# define edges as list of tuples from these lists
-edges = list(zip(list_sourceAP_ID, list_destAP_ID))
-
-
-# define edges as possible correspondence between source airport ID and destination ID
-for node in nodes:
-    edges = (aiport_source_uniq, airport_dest_uniq) 
-    
-G.add_edges_from([(airport_source_uniq, airport_dest_uniq)])
-# later:
-#define edges as a list of tuples (examples)
-#G.add_edges_from([(2965,2990),(2952,6156).(2990,6156)])
-#=======
-# add edges to graph
-G.add_edges_from(edges)
-#>>>>>>> upstream/master
-
-# visualize graph (takes a while)
-nx.draw(G,with_labels=True)
-nx.draw(G,with_labels=False)
-# x.draw(G,pos=nx.spring_layout(G)) diferent lay-out
-# does not yet show edges of graph..
-
-# try to visualise edges individually
-edge_graph = nx.draw_networkx_edges(G, pos=nx.spring_layout(G))
-
+graph = nx.from_pandas_edgelist(df_merged_small, source = 'source airport', 
+                                target = 'destination airport')
+plt.figure(figsize = (10,9))
+nx.draw_networkx(graph)
+#plt.savefig("./images/networkx_basemap/map_0.png", format = "png", dpi = 300)
+plt.show()
 #%%
-# other try of defining edges
-# define edges as possible correspondence between source airport ID and destination ID
-for node in nodes:
-    edges = (airport_source_uniq, airport_dest_uniq) 
-
-# add edges    
-G.add_edges_from([(airport_source_uniq, airport_dest_uniq)])
-# this doesn't work. should have list of tuples as input
-
-#%% defining the biggest airlines 
-
-df_top_airlines = df_merged.groupby(['airline', 'airline ID'])['airline'].agg({"code_count": len}).sort_values("code_count", ascending=False).head(100).reset_index()
-print(df_top_airlines)
-df_biggest_hubs = df_merged.groupby(['source airport'])['city'].agg({"code_count": len}).sort_values("code_count", ascending=False).head(100).reset_index()
-print(df_biggest_hubs)
-df_biggest_hubs_dest = df_merged.groupby(['destination airport'])['city'].agg({"code_count": len}).sort_values("code_count", ascending=False).head(100).reset_index()
-print(df_biggest_hubs_dest)
-#%% How to:
-# create list of unique combinations
-# every unique combination of [soure airport id - destination airport id]
-# loading these data into nx
-# output: huge ass big crazy graph 
-
-
-# selection of dataframe with unique combinations of [source airport ID - destination airport ID] 
-selection = df_merged.drop_duplicates(subset=["source airport ID", "destination airport ID"])
-selection2 = selection.iloc[:,2:21] # ignore airline info
-# but now include something that corrects for A to B == B to A
-# should sum up the amount of duplicates...
-
-
-
-# change node size depending on degree node
-d = nx.degree(G)
-print(d)
-
-nx.draw(G, nodelist=d.keys(), node_size=[v * 100 for v in d.values()])
-plt.show()
-
-
-
-# visualise with matplotlib - does not work...
+from mpl_toolkits.basemap import Basemap
+import numpy as np
 import matplotlib.pyplot as plt
-#mpl.pyplot.show()
-plt.savefig("graph.png")
+
+
+m = Basemap(projection='merc',
+            llcrnrlat=-80,
+            urcrnrlat=80,
+            llcrnrlon=-180,
+            urcrnrlon=180,
+            lat_ts=20)
+m.drawcoastlines()
+m.drawparallels(np.arange(-90.,91.,30.))
+m.drawmeridians(np.arange(-180.,181.,60.))
+m.drawmapboundary()
+m.drawcountries()
+
+
 plt.show()
-
-
-
-#%% create weighted graph
-
-# create list of unique combinations
-# every unique combination of [soure airport id - destination airport id]. But then correct for A to B == B to A
-
-# this is in matlab: [outputname, IA, IC] = unique(var)
-# probably .unique also holds something like this in python
 
 
 
