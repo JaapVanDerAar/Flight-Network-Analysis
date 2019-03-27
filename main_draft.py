@@ -35,7 +35,6 @@ except Exception as err:
     print(err)   
     
 
-
 #%% Inspect data
 
 # print headers of the columns

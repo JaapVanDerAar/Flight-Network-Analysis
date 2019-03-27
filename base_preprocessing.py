@@ -18,6 +18,15 @@ def load_data_routes_from_file(file):
     df_routes.rename(columns= {" stops":"stops"}, inplace=True)
     df_routes.rename(columns= {" equipment":"equipment"}, inplace=True)
 
+# =============================================================================
+    # I want to add some clean up, but it is not really working, although when i run it line
+    # by line it does work. Maybe somebody else can take a look at it. Also would be nice to still
+    # delete all unneccasary columns after merging such as equipment
+#     df_routes['source airport ID'] = pd.to_numeric(df_routes['source airport ID'].astype(str), 'coerce')
+#     df_routes['destination airport ID'] = pd.to_numeric(df_routes['destination airport ID'].astype(str), 'coerce')
+#     df_routes = df_routes.dropna(subset=["source airport ID", "destination airport ID"])
+# =============================================================================
+
     # return dataframe to calling code
     return df_routes
 
@@ -33,7 +42,6 @@ def load_data_airports_from_file(file):
     
     # return dataframe to calling code
     return df_airports  
-
 
 #%% Merge dataframes
     

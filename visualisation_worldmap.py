@@ -7,8 +7,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from mpl_toolkits.basemap import Basemap as Basemap
-import matplotlib.lines as mlines
+# from mpl_toolkits.basemap import Basemap as Basemap
+
 
 # Load smaller csv file for testing
 df_merged_small = pd.read_csv('df_merged_small.csv', sep=',')
@@ -16,7 +16,7 @@ df_merged_small = pd.read_csv('df_merged_small.csv', sep=',')
 #%% Visualisation binary graph - use DiGraph() for directed
 # Set variable 'graph', use nx.from_pandas_edgelist
 # https://networkx.github.io/documentation/networkx-1.10/reference/generated/networkx.convert_matrix.from_pandas_dataframe.html
-# this link contains several options such as making it a DiGraph()
+# this link contains several options such as making it a create_using = nx.DiGraph()
 # and it can be made weighted by using edge_attr
 graph = nx.from_pandas_edgelist(df_merged_small, source = 'source airport', 
                                  target = 'destination airport')
@@ -105,5 +105,44 @@ m.drawcountries()
 
 plt.show()
 
+#%% try US
 
+graph = nx.from_pandas_edgelist(df_merged_small, source = 'source airport', 
+                                target = 'destination airport', create_using = nx.DiGraph())
 
+plt.figure(figsize = (10,9))
+nx.draw_networkx(graph)
+ # plt.savefig("./images/map_0.png", format = "png", dpi = 300)
+plt.savefig("./map_0.png", format = "png", dpi = 300)
+plt.show()
+
+plt.figure(figsize = (10,9))
+m = Basemap(projection='merc',
+            llcrnrlon=-180,
+            llcrnrlat=-80,
+            urcrnrlon=180,
+            urcrnrlat=80,
+            lat_ts=20,
+            resolution='l',
+            suppress_ticks=True
+           )
+# ===========m.drawcoastlines()
+# m.drawparallels(np.arange(-90.,91.,30.))
+# m.drawmeridians(np.arange(-180.,181.,60.))
+# m.drawmapboundary()
+# m.drawcountries()
+# plt.show()
+# =============================================================================
+#%% try - not working
+df_routes_count =  pd.DataFrame(df_routes.groupby(['source airport', 'destination airport']).size().reset_index(name='counts'))
+
+counts1 = df_routes_count['source airport'].append(df_routes_count.loc[df_routes_count['source airport'] != df_routes_count['destination airport'], 'destination airport']).value_counts()
+
+counts = pd.DataFrame({'source airport': counts1.index, 'total_flight': counts1})
+df_routes_count_complete = counts.merge(df_routes_count, on = 'source airport')
+        
+#%%
+mx, my = m(df_merged['Long'].values, pos_data['Lat'].values)
+pos = {}
+for count, elem in enumerate (pos_data['IATA']):
+     pos[elem] = (mx[count], my[count])
