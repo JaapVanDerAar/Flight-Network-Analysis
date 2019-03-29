@@ -11,6 +11,8 @@ import numpy as np
 
 
 # Load smaller csv file for testing
+# CAUTION: this is just a small selection. This code now only works because 
+# every airport has flights to it and back, but i think this is not the case in our dataset
 df_merged_small = pd.read_csv('df_merged_small.csv', sep=',')
 
 #%% Visualisation binary graph - use DiGraph() for directed
@@ -28,6 +30,111 @@ nx.draw_networkx(graph)
 
 # add options to figure
 plt.show()
+
+#%% World map background
+
+# import tools
+from mpl_toolkits.basemap import Basemap
+import matplotlib.pyplot as plt
+
+#%% Draw network on the world map
+
+# create graph using NetworkX. Give the df, and the source and destination as input.
+# choose either diGraph or undirected
+graph = nx.from_pandas_edgelist(df_merged_small, source = 'source airport', 
+                                target = 'destination airport', create_using = nx.DiGraph())
+
+# plot this graph to see it, this is optional 
+plt.figure(figsize = (10,9))
+nx.draw_networkx(graph)
+
+
+plt.figure(figsize = (10,9))
+# use the mercator projection as background, and set the size 
+m = Basemap(projection='merc',
+            llcrnrlat=-80,
+            urcrnrlat=80,
+            llcrnrlon=-180,
+            urcrnrlon=180,
+            lat_ts=20)
+# include coastlines, countries and boundaries
+m.drawcoastlines()
+m.drawmapboundary()
+m.drawcountries()
+# include longitude and lattitude lines if you want
+m.drawparallels(np.arange(-90.,91.,30.))
+m.drawmeridians(np.arange(-180.,181.,60.))
+
+# To let the basemap know where the nodes are, assign values to them.
+# Assign the longitude to mx and the lattitude to my
+# Because you assign it to the m, which is the basemap, the coordinates are 
+# recalculated to the size of m
+mx, my = m(df_merged_small['longitude'].values, df_merged_small['lattitude'].values)
+
+# before plotting is possible, it needs to be in the right structure.
+# create variable pos, and for every longitude+lattitude, link them to the IATA code
+pos = {}
+for count, elem in enumerate (df_merged_small['IATA']):
+     pos[elem] = (mx[count], my[count])
+     
+# now the parameters G (the graph) and pos (the positions) are set
+     
+# draw the nodes on the map and set other parameters for layout
+nx.draw_networkx_nodes(G = graph, pos = pos, node_list = graph.nodes(), node_size = 50, node_color = 'r', alpha = 0.8)
+# draw the edges on the map and set other parameters for layout
+nx.draw_networkx_edges(G = graph, pos = pos, edge_color='b', width = 2, alpha=0.2)
+
+# save file
+plt.savefig("./map_0.png", format = "png", dpi = 300)
+plt.show()
+
+
+#%% SAME BUT WITH BIG FILE 
+### THIS DOES NOT WORK YET. BECAUSE FOR INSTANCE AIRPORT 'MRV' HAS ONLY FLIGHTS TO IT
+### BECAUSE THE FILE IS MERGED BASED ON THE SOURCE AIRPORT 'MRV' DOES NOT HAVE THE 
+### COORDINATES IN THE FILE. BECAUSE OF THIS, IT CANNOT PLOT IT ON THE WORLD MAP
+### AND THEREFORE IT WILL NOT PLOT THE FULL THING ON THE WORLD MAP
+
+graph = nx.from_pandas_edgelist(df_merged, source = 'source airport', 
+                                target = 'destination airport', create_using = nx.DiGraph())
+
+plt.figure(figsize = (10,9))
+nx.draw_networkx(graph)
+ # plt.savefig("./images/map_0.png", format = "png", dpi = 300)
+plt.savefig("./map_0.png", format = "png", dpi = 300)
+plt.show()
+
+plt.figure(figsize = (10,9))
+m = Basemap(projection='merc',
+            llcrnrlon=-180,
+            llcrnrlat=-80,
+            urcrnrlon=180,
+            urcrnrlat=80,
+            lat_ts=20,
+            resolution='l',
+            suppress_ticks=True
+           )
+m.drawcoastlines()
+m.drawparallels(np.arange(-90.,91.,30.))
+m.drawmeridians(np.arange(-180.,181.,60.))
+m.drawmapboundary()
+m.drawcountries()
+
+mx, my = m(df_merged['longitude'].values, df_merged['lattitude'].values)
+pos = {}
+for count, elem in enumerate (df_merged_small['IATA']):
+     pos[elem] = (mx[count], my[count])
+     
+nx.draw_networkx_nodes(G = graph, pos = pos, node_list = graph.nodes(), node_size = 50, node_color = 'r', alpha = 0.8)
+nx.draw_networkx_edges(G = graph, pos = pos, edge_color='b', width = 2, alpha=0.2)
+plt.tight_layout()
+plt.show()
+
+
+
+#%%
+
+#### ALL NEXT CODE WE DONT NEED FOR NOT BUT I'LL JUST SAVE IT HERE FOR NOW
 
 #%% Worldmap 1
 # import necessary packages
@@ -84,65 +191,3 @@ plt.figure(figsize = (10,9))
 nx.draw_networkx(graph)
 #plt.savefig("./images/networkx_basemap/map_0.png", format = "png", dpi = 300)
 plt.show()
-#%%
-from mpl_toolkits.basemap import Basemap
-import numpy as np
-import matplotlib.pyplot as plt
-
-
-m = Basemap(projection='merc',
-            llcrnrlat=-80,
-            urcrnrlat=80,
-            llcrnrlon=-180,
-            urcrnrlon=180,
-            lat_ts=20)
-m.drawcoastlines()
-m.drawparallels(np.arange(-90.,91.,30.))
-m.drawmeridians(np.arange(-180.,181.,60.))
-m.drawmapboundary()
-m.drawcountries()
-
-
-plt.show()
-
-#%% try US
-
-graph = nx.from_pandas_edgelist(df_merged_small, source = 'source airport', 
-                                target = 'destination airport', create_using = nx.DiGraph())
-
-plt.figure(figsize = (10,9))
-nx.draw_networkx(graph)
- # plt.savefig("./images/map_0.png", format = "png", dpi = 300)
-plt.savefig("./map_0.png", format = "png", dpi = 300)
-plt.show()
-
-plt.figure(figsize = (10,9))
-m = Basemap(projection='merc',
-            llcrnrlon=-180,
-            llcrnrlat=-80,
-            urcrnrlon=180,
-            urcrnrlat=80,
-            lat_ts=20,
-            resolution='l',
-            suppress_ticks=True
-           )
-# ===========m.drawcoastlines()
-# m.drawparallels(np.arange(-90.,91.,30.))
-# m.drawmeridians(np.arange(-180.,181.,60.))
-# m.drawmapboundary()
-# m.drawcountries()
-# plt.show()
-# =============================================================================
-#%% try - not working
-df_routes_count =  pd.DataFrame(df_routes.groupby(['source airport', 'destination airport']).size().reset_index(name='counts'))
-
-counts1 = df_routes_count['source airport'].append(df_routes_count.loc[df_routes_count['source airport'] != df_routes_count['destination airport'], 'destination airport']).value_counts()
-
-counts = pd.DataFrame({'source airport': counts1.index, 'total_flight': counts1})
-df_routes_count_complete = counts.merge(df_routes_count, on = 'source airport')
-        
-#%%
-mx, my = m(df_merged['Long'].values, pos_data['Lat'].values)
-pos = {}
-for count, elem in enumerate (pos_data['IATA']):
-     pos[elem] = (mx[count], my[count])
