@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Mar 27 16:04:25 2019
+
+@author: Kirsten
+"""
 
 # !!! for this script, first run the load data and preprocessing cells of main.py
 # for this you should also have the preprocessing module in the same directory
@@ -12,41 +19,66 @@ import pandas as pd
 import operator
 
 
-#%% Function to create a network graph object (still adjust)
+#%% Function to create a network graph object
 
-df_small = df_merged.iloc[0:20]
+def create_graph_object(df, source_column_name, dest_column_name):
+    graph = nx.from_pandas_edgelist(df, source = source_column_name, \
+                                 target = dest_column_name)
+    return graph
 
-df_to_visualize = df_merged
 
-graph = nx.from_pandas_edgelist(df_to_visualize, source = 'source airport', \
-                                 target = 'destination airport')
+#%% Function to draw graph object
+
+def draw_graph(graph, ns=150, fs=10):
+    
+    # add options to figure using plt function
+    
+    # set size
+    plt.figure(figsize = (10,10))
+    
+    # turn axes off
+    plt.axis('off')
+    
+    # draw network
+    nx.draw_networkx(graph, node_size = ns, font_size = fs)
+    
+    # show plot
+    plt.show()
+
+
+
+#%% NETWORK ANALYSIS OF FLIGHT NETWORK
+
+# create graph object of the flight data in df
+graph_flight_network = create_graph_object(df_merged, 'source airport', 'destination airport')
 
 # print graph info
-graph_info = nx.info(graph)
+graph_info = nx.info(graph_flight_network)
 print(graph_info)
 
-#%% Draw graph (Make into function!)
 
-nx.draw_networkx(graph)
 
-# set size of the figue using matplotlib as plt
-plt.figure(figsize = (10,10))
+#%% Visualize the network graph
 
-# add options to figure
-plt.axis('off')
+# take smaller subset of df_merged to save time
+df_merged_small = df_merged[:100]
 
-# show plot
-plt.show()
+# create graph object for subset
+graph_flight_network_small = create_graph_object(df_merged_small, 'source airport', 'destination airport')
+
+# draw graph
+draw_graph(graph_flight_network_small)
+
 
 
 #%% Global metrics
 
 # calculate density of the network
-density = nx.density(graph)
+density = nx.density(graph_flight_network)
 
 # calculate average shortest path
-#short_path_av = nx.average_shortest_path_length(graph)
-# error: graph is not fully connected...
+#short_path_av = nx.average_shortest_path_length(graph_flight_network)
+# error: graph is not fully connected... something we should look at!
 
 # calculate average shortest path per subgraph (takes a while)
 #for C in nx.connected_component_subgraphs(graph):
@@ -54,14 +86,14 @@ density = nx.density(graph)
 # apparently there are 8 subgraphs in the flight network    
 
 
-#%% Nodal metrics
-
+#%% Nodal metrics: calculate degree of each node and identify hubs
 
 # calculate degree of each node and save as dictionary
-degree_nodes = dict(graph.degree())
+degree_nodes = dict(graph_flight_network.degree())
 
-# add degree as node attribute
-nx.set_node_attributes(graph, degree_nodes, 'degree')
+# add degree as node attribute ???
+nx.set_node_attributes(graph_flight_network, degree_nodes, "degree")
+
 
 # sort nodes by degree
 # (since dictionaries can not be sorted on value we use the itemgetter function)
@@ -73,101 +105,132 @@ df_degree = pd.DataFrame(degree_nodes_sorted, columns=["airport", "degree"])
 # maybe merge this df with big df_merged to get other info?
 
 # define top hubs
-hubs_nr = 10
+hubs_nr = 20
 df_hubs = df_degree[:hubs_nr]
-
-
-
-# use list comprehension to access first value in list of tuples
-#nodes_to_list = [x[0] for x in degree_nodes_sorted]
-
-# define amount of hubs
-#hubs_nr = 20
-
-# create list of top hubs
-#hubs = nodes_to_list[:hubs_nr]
-
-
+hub_list = df_hubs["airport"].tolist()
 
 
 # still add: in / out degree
 
 
-#%% Visualise hubs
 
-# bar plot of top hubs
+#%% THE HUBNETWORK
+
+# create a df with only the flights from hub airports
+df_hubs_extended_from = df_merged[df_merged["source airport"].isin(hub_list)]
+
+# create a df with only the flights to hub airports
+df_hubs_extended_to = df_merged[df_merged["destination airport"].isin(hub_list)]
+
+# for simplicity we will use the df with flights from hub airports, since this df contains more flights
+
+# create graph object of the hub flight data in df
+graph_hub_network = create_graph_object(df_hubs_extended_from, 'source airport', 'destination airport')
+
+# print graph info
+graph_info_hubs = nx.info(graph_hub_network)
+print(graph_info_hubs)
+
+
+
+#%% Visualization 1: bar plot of top hubs
 
 df_hubs.plot.bar(x = "airport", y = "degree", legend=False)
-plt.ylabel("flights")
+plt.ylabel("flight routes")
 plt.show()
 
 
+#%% Visualization 2: network graph of hub airports and their in and outcoming flight routes
+
+# make list of node size for each hub
+degree_hubs = dict(graph_hub_network.degree())
+
+node_size_list_hubs = []
+for h in degree_hubs.values():
+    node_size_list_hubs = node_size_list_hubs + [h * 1.5]
 
 
-# options:
-# ten biggest hubs as 'weighted' hubs on the world hubs
+# draw graph with node size dependent on degree
+plt.figure(figsize = (20,20))
+plt.axis('off') 
 
-# compare complete network with network of the top 10 hubs, so problably these ten will 
-# already cover almost the whole world. 
+# determine lay-out
+pos = nx.fruchterman_reingold_layout(graph_hub_network)
+
+# draw whole network
+nx.draw_networkx(graph_hub_network, pos, node_size = node_size_list_hubs, \
+                 with_labels=False, width=0.5, edge_color='#778899')
+
+
+# highlight hubs 
+
+# first create labels only for hubs
+labels = {}
+labels2 = {}
+labels3 = {}
+idx = 0
+
+for node in hub_list:
+    # write node (airport) name for every hub in dictionary
+    labels[node] = node
+    
+    # write node (airport) city for every hub in dictionary
+    bla = df_merged[df_merged["source airport"]== hub_list[idx]].reset_index()
+    labels2[node] = bla.loc[0,"city"]
+    
+    # write both airport name and city in dictionary
+    labels3[node] = node, bla.loc[0,"city"]
+    idx += 1
+
+
+# draw hubs
+#nx.draw_networkx_nodes(graph_hub_network, pos, nodelist=hub_list, node_color='red', node_size=node_size_list_hubs)
+
+
+# draw hub labels
+nx.draw_networkx_labels(graph_hub_network, pos, labels=labels2, font_size=12, font_color='#000000')
+         
+
+# show graph
+plt.show()                        
+
+    
+
+            
+
+
+
+
+#%% Visualization 3: network graph of all airports with hubs highlighted
+
+# make list of node size for each node/airport
+
+node_size_list = []
+for h in degree_nodes.values():
+    node_size_list = node_size_list + [h * 1.5]
+
+
+# draw graph with node size dependent on degree
+plt.figure(figsize = (20,20))
+plt.axis('off') 
+
+# determine lay-out
+pos = nx.fruchterman_reingold_layout(graph_flight_network)
+
+# draw whole network
+nx.draw_networkx(graph_flight_network, pos, node_size = node_size_list, \
+                 node_color = "#2F4F4F", with_labels=False, width=0.5, edge_color='#778899')
+
+# draw hubs
+nx.draw_networkx_nodes(graph_flight_network, pos, nodelist=hub_list, node_color='red', node_size=node_size_list_hubs)
+
+# show graph
+plt.show()  
+
+
 
 #%% optional: What is the most important airport per airline e.g. is 
 # Charles de Gaulle or Schiphol Airport the most connected hub of Air-France-KLM?
-
-
-
-#%% Create binary graph
-
-# simple try:
-
-# create empty graph structure
-G = nx.Graph()
-
-# unique source and destination airports
-airport_source_uniq = df_merged["source airport ID"].unique() #3321 unique source airports
-airport_dest_uniq = df_merged["destination airport ID"].unique() #3327 unique dest airports
-
-# define nodes (now: source airports)
-nodes = airport_source_uniq.tolist()
-
-# add nodes to graph
-G.add_nodes_from(nodes)
-# (Use keywords to update specific node attributes for every node, like size and weight)
-
-# selection of dataframe with unique combinations of [source airport ID - destination airport ID] 
-selection_uniq_routes = df_merged.drop_duplicates(subset=["source airport ID", "destination airport ID"])
-
-# create lists of source en dest airport IDs
-list_sourceAP_ID = selection_uniq_routes["source airport ID"].tolist()
-list_destAP_ID = selection_uniq_routes["destination airport ID"].tolist()
-
-# define edges as list of tuples from these lists
-edges = list(zip(list_sourceAP_ID, list_destAP_ID))
-
-
-
-
-
-#%% Visualize binary graph of hubs
-
-# Set variable 'graph', use nx.from_pandas_edgelist
-# https://networkx.github.io/documentation/networkx-1.10/reference/generated/networkx.convert_matrix.from_pandas_dataframe.html
-# this link contains several options such as making it a DiGraph()
-# and it can be made weighted by using edge_attr
-
-df_to_visualize = df_hubs
-
-graph = nx.from_pandas_edgelist(df_to_visualize, source = 'source airport', 
-                                 target = 'destination airport')
-
-# set size of the figue using matplotlib as plt
-plt.figure(figsize = (20,20))
-
-# Draw graph
-nx.draw_networkx(graph)
-
-# add options to figure
-plt.axis('off')
-plt.show()
 
 
 
@@ -213,4 +276,32 @@ selection = df_merged.drop_duplicates(subset=["source airport ID", "destination 
 selection2 = selection.iloc[:,2:21] # ignore airline info
 # but now include something that corrects for A to B == B to A
 # should sum up the amount of duplicates...
+
+#%% Create binary graph
+
+# simple try:
+
+# create empty graph structure
+G = nx.Graph()
+
+# unique source and destination airports
+airport_source_uniq = df_merged["source airport ID"].unique() #3321 unique source airports
+airport_dest_uniq = df_merged["destination airport ID"].unique() #3327 unique dest airports
+
+# define nodes (now: source airports)
+nodes = airport_source_uniq.tolist()
+
+# add nodes to graph
+G.add_nodes_from(nodes)
+# (Use keywords to update specific node attributes for every node, like size and weight)
+
+# selection of dataframe with unique combinations of [source airport ID - destination airport ID] 
+selection_uniq_routes = df_merged.drop_duplicates(subset=["source airport ID", "destination airport ID"])
+
+# create lists of source en dest airport IDs
+list_sourceAP_ID = selection_uniq_routes["source airport ID"].tolist()
+list_destAP_ID = selection_uniq_routes["destination airport ID"].tolist()
+
+# define edges as list of tuples from these lists
+edges = list(zip(list_sourceAP_ID, list_destAP_ID))
 
