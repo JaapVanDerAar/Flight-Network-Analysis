@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Mar 27 16:04:25 2019
-
-@author: Kirsten
-"""
-
 # !!! for this script, first run the load data and preprocessing cells of main.py
 # for this you should also have the preprocessing module in the same directory
 # result: you should have the merged dataframe as variable
@@ -109,6 +101,20 @@ hubs_nr = 20
 df_hubs = df_degree[:hubs_nr]
 hub_list = df_hubs["airport"].tolist()
 
+#function to let the user decide how many hubs to display 
+def take_nairlines(hubs):
+    df_hubs = df_degree[:hubs]
+    hub_list = df_hubs["airport"].tolist()
+    return hub_list
+   
+while True: 
+    try: 
+        hubs_user = int(input("How many top airlines would you like to be shown? "))
+        break 
+    except ValueError: 
+        print("That was not an integer.")
+        
+take_nairlines(hubs_user)
 
 # still add: in / out degree
 
