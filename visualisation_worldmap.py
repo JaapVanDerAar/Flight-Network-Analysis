@@ -44,9 +44,9 @@ m = Basemap(projection='merc',
             llcrnrlat=-80,
             urcrnrlon=180,
             urcrnrlat=80,
-            lat_ts=20,
-            resolution='l',
-            suppress_ticks=True
+            # lat_ts=20,
+            # resolution='l',
+            # suppress_ticks=True
            )
 # include coastlines, countries and boundaries
 m.drawcoastlines()
@@ -54,8 +54,8 @@ m.drawmapboundary()
 m.drawcountries()
 
 # include longitude and lattitude lines if you want
-m.drawparallels(np.arange(-90.,91.,30.))
-m.drawmeridians(np.arange(-180.,181.,60.))
+m.drawparallels(np.arange(-90,90,30))
+m.drawmeridians(np.arange(-180,180,60))
 
 # To let the basemap know where the nodes are, assign values to them.
 # Assign the longitude to mx and the lattitude to my
@@ -72,9 +72,10 @@ for count, elem in enumerate (df_merged['source airport']):
 nx.draw_networkx_nodes(G = graph, pos = pos, node_list = graph.nodes(), node_size = 50, node_color = 'r', alpha = 0.8)
 # draw the edges on the map and set other parameters for layout
 nx.draw_networkx_edges(G = graph, pos = pos, edge_color='b', width = 2, alpha=0.2)
-plt.tight_layout()
+# plt.tight_layout()
+plt.figure(figsize = (130,120))
 plt.show()
-    
+
 # save file
 plt.savefig("./map_0.png", format = "png", dpi = 300) 
      
