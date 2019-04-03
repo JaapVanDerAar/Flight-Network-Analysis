@@ -90,14 +90,34 @@ while True:
     
     if choice == "1": # Visualize flight network
         
-        # 1st parameter: weighted or binary network
-        map_weight = input('Do you want the network to be weighted or not? (weighted/unweigthed) ')
-        if map_weight == 'weighted':
-            print(f'You chose to create a {map_weight} network')
-        elif map_weight == 'unweighted':
-            print(f'You chose to create a {map_weight} network')
+        
+        # 1st parameters: amount of airlines and airports
+        map_amount = input("""What do you want to do?
+        1\tSelect all airlines and airports              
+        2\tSelect a specific amount of airlines
+        3\tSelect a specific amount of airports
+        enter answer (1/2/3): """)
+        if map_amount == '1':
+            print('You chose to plot all airlines and airports')
+        elif map_amount == '2':
+            print('You chose to plot a specific amount of airlines')
+            map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
+            if 1 <= map_number_airlines <= 50:
+                print(f'You chose to plot the top {map_number_airlines} biggest airlines')
+            else:
+                print('Sorry, this is not an option, we will not proceed any further')    
+                break
+        elif map_amount == '3':
+            print('You chose to plot a specific amount of airports')
+            map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
+            if 1 <= map_number_airports <= 50:
+                print(f'You chose to plot the top {map_number_airports} biggest airports')
+            else:
+                print('Sorry, this is not an option, we will not proceed any further')    
+                break
         else:
-            print('Sorry, this is not an option, we will not proceed any further')
+            print('Sorry, this is not an option, we will not proceed any further')  
+            break                    
     
         # 2nd parameter: directed or undirected network
         map_edges = input('Do you want the edges to be directed or not? (directed/undirected) ')
@@ -106,31 +126,19 @@ while True:
         elif map_edges == 'undirected':
             print(f'You chose to create a {map_edges} network')
         else:
-            print('Sorry, this is not an option, we will not proceed any further')
+            print('Sorry, this is not an option, we will not proceed any further')    
+            break
         
-        # 3rd parameter: airlines
-        map_number_airlines = input('Do you want to plot all airlines or a certain amount of biggest airlines? (all/top) ')
-        if map_number_airlines == 'all':
-            print(f'You chose to plot {map_number_airlines} airlines')
-        elif map_number_airlines == 'top':
-            map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
-            print(f'You chose to plot the top {map_number_airlines} biggest airlines')
+        # @ Kirsten, adjust this option to whatever you want
+        # 3rd parameter: weighted or binary network
+        map_weight = input('Do you want the network to be weighted or not? (weighted/unweigthed) ')
+        if map_weight == 'weighted':
+            print(f'You chose to create a {map_weight} network')
+        elif map_weight == 'unweighted':
+            print(f'You chose to create a {map_weight} network')
         else:
             print('Sorry, this is not an option, we will not proceed any further')
-        
-        # 4th parameter: airports
-        map_number_airports = input('Do you want to plot all airports or a certain amount of biggest airports? (all/top) ')
-        if map_number_airports == 'all':
-            print(f'You chose to plot {map_number_airports} airports')
-        elif map_number_airports == 'top':
-            map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
-            print(f'You chose to plot the top {map_number_airports} biggest airports')
-        else:
-            print('Sorry, this is not an option, we will not proceed any further')
-        
-        # create flight network visualization based on user input
-        print("to do: plot flight network with the input variables as parameters")
-        
+            break
      
     elif choice == "2": # Analyze 'who are the biggest'?
         
