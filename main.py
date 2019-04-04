@@ -1,11 +1,14 @@
 # MAIN PROGRAM
 # handling the interaction with the user
 
-#%% import self-defined modules
+#%% import modules and packages
 
+# self-defined modules
 import base_preprocessing as bpp
 import module_visualization_worldmap as worldmap
 import module_comparison as comp
+
+# other modules
 import networkx as nx
 
 # list of other packages to install:
@@ -41,34 +44,52 @@ except Exception as err:
     print(err)   
     
 
-#%% Inspect data --> make optional in function!!
+#%% Inspect data -- MAKE THIS IN A NICER FORMAT
 
-# print headers of the columns
-print(df_routes.columns)
-print(df_airports.columns)
+# ask user whether he/she wants to get some basic information on the datasets
+while True:
+    data_inspection = input("do you want to get some information on the datasets? (y/n) ")
 
-# Unique number of values in both files
-# print unique values of df_routes
-print('df_routes unique values per variable \n')
-for column in df_routes.columns:
-    print(f'{column} = {len(df_routes[column].unique())}')
+    # if user says 'yes', print information on datasets
+    if data_inspection == "y":
+        
+        # print headers of the columns
+        print(df_routes.columns)
+        print(df_airports.columns) 
+        
+        # print unique values of df_routes
+        print('df_routes unique values per variable \n')
+        for column in df_routes.columns:
+            print(f'{column} = {len(df_routes[column].unique())}')
+        
+        print('\n\n')
+        
+        #print unique values of df_airports
+        print('df_airports unique values per variable \n')
+        for column in df_airports.columns:
+            print(f'{column} = {len(df_airports[column].unique())}')
+        
+        break
+        
+    # if user says 'no', print message accordingly
+    elif data_inspection == "n":
+        print("Okay let's move on to the visualisation then!")
+        break
+    
+    # if an invalid answer is given, print message accordingly
+    else:
+        print('Sorry, this is not an option, try again')
 
-print('\n\n')
-
-#print unique values of df_airports
-print('df_airports unique values per variable \n')
-for column in df_airports.columns:
-    print(f'{column} = {len(df_airports[column].unique())}')
 
 
 #%% Data preprocessing
     
 # merging of the two df's    
-try:
-    df_merged = bpp.merge_dataframes(df_routes, df_airports)
-except Exception as err: 
-    print("Something went wrong")
-    print(err)    
+df_merged = bpp.merge_dataframes(df_routes, df_airports)
+
+# cleaning of the merged df
+df_merged = bpp.clean_dataframe(df_merged)   
+
 
 
 #%% run program in loop until user chooses to exit
@@ -78,19 +99,16 @@ while True:
     choice = input("""What do you want to do?
     0\tSee demo visualization of the flight network               
     1\tVisualise flight network with self-chosen parameters
-    2\tAnalyze 'who are the biggest'?
-    3\tAnalyze opportunities for new flight routes
-    4\tExit program.
-    enter answer (0/1/2/3/4): """)
+    2\tAnalyze opportunities for new flight routes
+    3\tExit program.
+    enter answer (0/1/2/3): """)
     
     # evaluate user choice and proceed accordingly
     if choice == "0": # see demo
        worldmap.visualize_on_worldmap(df_merged, nx.Graph())
  
     
-    
     if choice == "1": # Visualize flight network
-        
         
         # 1st parameters: amount of airlines and airports
         map_amount = input("""What do you want to do?
@@ -100,7 +118,8 @@ while True:
         enter answer (1/2/3): """)
         if map_amount == '1':
             print('You chose to plot all airlines and airports')
-            dataframe = df_merged           
+            dataframe = df_merged  
+            
         elif map_amount == '2':
             print('You chose to plot a specific amount of airlines')
             map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
@@ -108,78 +127,93 @@ while True:
                 print(f'You chose to plot the top {map_number_airlines} biggest airlines')
                 ### CALL CREATE SPECIFIC AIRLINES FUNCTION HERE 
                 ### AND RETURN THE DATAFRAME AS:  dataframe = 
+                ### add cleaning function: dataframe = bpp.clean_dataframe(df_airports)
+                
+                ### MAYBE ALSO ADD OPTION TO DISPLAY SPECIFIC AIRLINE
             else:
                 print('Sorry, this is not an option, we will not proceed any further')    
-                break
+            
         elif map_amount == '3':
             print('You chose to plot a specific amount of airports')
             map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
+            
+            ### MAYBE ALSO ADD OPTION TO DISPLAY SPECIFIC AIRPORT. i already made a function
+            
             if 1 <= map_number_airports <= 50:
-                print(f'You chose to plot the top {map_number_airports} biggest airports')
-                ### CALL CREATE SPECIFIC AIRPORTS FUNCTION HERE 
-                ### AND RETURN THE DATAFRAME AS:  dataframe = 
+                hubs_nr = map_number_airports
+                print(f'You chose to plot the top {hubs_nr} biggest airports')
+                
+                # determine what are the top 'n' most connected airports (hubs)
+                hub_table = comp.find_hubs_in_df(df_merged, hubs_nr)
+                
+                # create a dataframe with only the in and outcoming flights from hub airports
+                df_hubs = comp.hub_network_df(df_merged, hub_table)
+                
+                # clean dataframe from airports that do not have incoming flights
+                dataframe = bpp.clean_dataframe(df_hubs)
+                
+                # show barplot of amount of flight routes (edges) per hub airport
+                comp.barplot_hubs(hub_table)
+                
             else:
                 print('Sorry, this is not an option, we will not proceed any further')    
-                break
+
         else:
-            print('Sorry, this is not an option, we will not proceed any further')  
-            break                    
+            print('Sorry, this is not an option, we will not proceed any further')                   
+    
     
         # 2nd parameter: directed or undirected network
         map_edges = input("""What do you want to do?
         1\tMake an undirected network              
         2\tMake a directed network
         enter answer (1/2): """)
+        
         if map_edges == '1':
             print(f'You chose to create an undirected network')
             directionality = nx.Graph()
+            
         elif map_edges == '2':
             print(f'You chose to create a directed network')
             directionality = nx.DiGraph()
+            
         else:
             print('Sorry, this is not an option, we will not proceed any further')    
-            break
         
-        # @ Kirsten, adjust this option to whatever you want
-        # 3rd parameter: weighted or binary network
-        hub_size = input("""What do you want to do?
-        1\tSomething here              
-        2\tSomething here
+
+        # 3rd parameter: size of the airports
+        size_airport = input("""What do you want to do?
+        1\tDisplay all airports with the same size             
+        2\tDisplay size of airport depending on how many flight routes it has (degree)
         enter answer (1/2): """)
-        if hub_size == '1':
-            print(f'You chose to create a blabla network')
-        elif hub_size == '2':
-            print(f'You chose to create a blabla network')
+        
+        if size_airport == '1':
+            print(f'You chose to display all airports with the same size')
+            node_size = 40
+            
+        elif size_airport == '2':
+            print(f'You chose to display airport size dependent on degree')
+            
+            # create graph object from dataframe defined as 1st parameter
+            graph = comp.create_graph_object(dataframe)
+            
+            # ADJUST! now degree of node changes dependent on subnetwork.
+            # degree should be static, based on whole network!
+            # use graph object to calculate degree per node and write to list
+            node_size = comp.node_size_degree(graph)
+            
         else:
             print('Sorry, this is not an option, we will not proceed any further')
-            break
         
-        # and the third parameter to this function and to the module
-        worldmap.visualize_on_worldmap(dataframe, directionality)
+        
+        # VISUALIZE FLIGHT NETWORK WITH USER OPTIONS
+        worldmap.visualize_on_worldmap(dataframe, directionality, node_size)
      
-    elif choice == "2": # Analyze 'who are the biggest'?
-        
-        # print options to user:
-        choice = input("""What do you want to do?
-        1\tAnalyze biggest airports (hubs)
-        2\tAnalyze biggest airlines
-        enter answer (1/2): """)
-        if choice == "1":
-            hubs_nr = int(input('How many of the biggest airports do you want to analyze? (1 to 50) '))
-            comp.create_bargraph_hubs(df_merged, 'source airport', 'destination airport', hubs_nr)
-
-        elif choice == "2":
-            print("To do: returns bar graph of top airlines based on 'connectedness' (number of flight routes/edges).")
-            #print("To do: returns network metrics of 2 biggest airlines.")
             
-        else: 
-            print("Choice not recognized. Try again.")
-            
-    elif choice == "3": # Analyze opportunities for new flight routes
+    elif choice == "2": # Analyze opportunities for new flight routes
         print("To do: return list of routes that are not/less used in the network of the 100 biggest hubs")
         print("To do: create visualisation of 'missing' routes")
         
-    elif choice == "4": # Exit program
+    elif choice == "3": # Exit program
         print("Thank you for using this program.")
         break 
     
@@ -189,4 +223,3 @@ while True:
         
       
     
-
