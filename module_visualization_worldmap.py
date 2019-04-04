@@ -11,12 +11,11 @@ from mpl_toolkits.basemap import Basemap
 
 #%% Function to draw network on the world map
 
-def visualize_on_worldmap(dataframe,source_column_name,dest_column_name):
-    
-    
+def visualize_on_worldmap(dataframe, directionality):
+        
     # create graph object from dataframe using NetworkX
-    graph = nx.from_pandas_edgelist(dataframe, source = source_column_name, 
-                                target = dest_column_name)
+    graph = nx.from_pandas_edgelist(dataframe, source = 'source airport', 
+                                target = 'destination airport', create_using = directionality)
 
     # print graph info
     graph_info = nx.info(graph)
@@ -49,7 +48,7 @@ def visualize_on_worldmap(dataframe,source_column_name,dest_column_name):
     # recalculated to the size of m
     mx, my = m(dataframe['longitude'].values, dataframe['lattitude'].values)
     pos = {}
-    for count, elem in enumerate (dataframe[source_column_name]):
+    for count, elem in enumerate (dataframe['source airport']):
          pos[elem] = (mx[count], my[count])    
     # now the parameters G (the graph) and pos (the positions) are set  
     
