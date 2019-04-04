@@ -6,6 +6,7 @@
 import base_preprocessing as bpp
 import module_visualization_worldmap as worldmap
 import module_comparison as comp
+import networkx as nx
 
 # list of other packages to install:
 # matplotlib
@@ -84,7 +85,7 @@ while True:
     
     # evaluate user choice and proceed accordingly
     if choice == "0": # see demo
-       worldmap.visualize_on_worldmap(df_merged,'source airport','destination airport')
+       worldmap.visualize_on_worldmap(df_merged, nx.Graph())
  
     
     
@@ -99,11 +100,14 @@ while True:
         enter answer (1/2/3): """)
         if map_amount == '1':
             print('You chose to plot all airlines and airports')
+            dataframe = df_merged           
         elif map_amount == '2':
             print('You chose to plot a specific amount of airlines')
             map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
             if 1 <= map_number_airlines <= 50:
                 print(f'You chose to plot the top {map_number_airlines} biggest airlines')
+                ### CALL CREATE SPECIFIC AIRLINES FUNCTION HERE 
+                ### AND RETURN THE DATAFRAME AS:  dataframe = 
             else:
                 print('Sorry, this is not an option, we will not proceed any further')    
                 break
@@ -112,6 +116,8 @@ while True:
             map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
             if 1 <= map_number_airports <= 50:
                 print(f'You chose to plot the top {map_number_airports} biggest airports')
+                ### CALL CREATE SPECIFIC AIRPORTS FUNCTION HERE 
+                ### AND RETURN THE DATAFRAME AS:  dataframe = 
             else:
                 print('Sorry, this is not an option, we will not proceed any further')    
                 break
@@ -120,25 +126,36 @@ while True:
             break                    
     
         # 2nd parameter: directed or undirected network
-        map_edges = input('Do you want the edges to be directed or not? (directed/undirected) ')
-        if map_edges == 'directed':
-            print(f'You chose to create a {map_edges} network')
-        elif map_edges == 'undirected':
-            print(f'You chose to create a {map_edges} network')
+        map_edges = input("""What do you want to do?
+        1\tMake an undirected network              
+        2\tMake a directed network
+        enter answer (1/2): """)
+        if map_edges == '1':
+            print(f'You chose to create an undirected network')
+            directionality = nx.Graph()
+        elif map_edges == '2':
+            print(f'You chose to create a directed network')
+            directionality = nx.DiGraph()
         else:
             print('Sorry, this is not an option, we will not proceed any further')    
             break
         
         # @ Kirsten, adjust this option to whatever you want
         # 3rd parameter: weighted or binary network
-        map_weight = input('Do you want the network to be weighted or not? (weighted/unweigthed) ')
-        if map_weight == 'weighted':
-            print(f'You chose to create a {map_weight} network')
-        elif map_weight == 'unweighted':
-            print(f'You chose to create a {map_weight} network')
+        hub_size = input("""What do you want to do?
+        1\tSomething here              
+        2\tSomething here
+        enter answer (1/2): """)
+        if hub_size == '1':
+            print(f'You chose to create a blabla network')
+        elif hub_size == '2':
+            print(f'You chose to create a blabla network')
         else:
             print('Sorry, this is not an option, we will not proceed any further')
             break
+        
+        # and the third parameter to this function and to the module
+        worldmap.visualize_on_worldmap(dataframe, directionality)
      
     elif choice == "2": # Analyze 'who are the biggest'?
         
