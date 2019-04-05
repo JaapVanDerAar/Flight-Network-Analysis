@@ -106,6 +106,7 @@ while True:
         1\tSelect all airlines and airports              
         2\tSelect a specific amount of airlines
         3\tSelect a specific amount of airports
+        4\tSelect a specific airport on name
         enter answer (1/2/3): """)
         if map_amount == '1':
             print('You chose to plot all airlines and airports')
@@ -145,9 +146,13 @@ while True:
                 
                 # show barplot of amount of flight routes (edges) per hub airport
                 comp.barplot_hubs(hub_table)
-                
-            else:
-                print('Sorry, this is not an option, we will use the default setting')   
+
+        elif map_amount == '4':
+            print('You chose to plot a specific airport based on name')
+            airport = str(input('Which airport do you want to select? Enter the three letter code in capitals '))
+            
+            comp.specific_airport_df(df, airport)
+ 
 
         else:
             print('Sorry, this is not an option, we will use the default setting')                  
