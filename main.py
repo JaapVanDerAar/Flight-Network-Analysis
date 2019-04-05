@@ -206,6 +206,28 @@ while True:
             
     elif choice == "3": # THIS IS FOR THE COMPARISON
         print('hi')
+        print('You chose to plot a specific amount of airlines')
+            airline_table = comp.airline_table(df_merged)
+            map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
+            if 1 <= map_number_airlines <= 50:
+                print(f'You chose to plot the top {map_number_airlines} biggest airlines')
+                
+                ### AMOUNT OF SPECIFIC AIRLINES FUNCTION
+                dataframe=comp.take_nairlines(df_merged, airline_table, map_number_airlines)
+                
+                ### CALL CREATE SPECIFIC AIRLINES FUNCTION HERE, input selected_airline still to be designed 
+                #df_specairlines = comp.take_airlines(df_merged, selected_airline)
+                
+                ### selected_airline = str(input("Which airline do you want to visualize? (2 letters code, CAPITAL LETTERS) "))
+
+                ### AND RETURN THE DATAFRAME AS:  dataframe = 
+                
+                ### add cleaning function: dataframe = bpp.clean_dataframe(df_nairlines)
+                ### dataframe = bpp.clean_dataframe(df_specairlines)
+            
+            else:
+                print('Sorry, this is not an option, we will use the default setting')
+                
         
     elif choice == "4": # Exit program 
         print("Thank you for using this program.")
