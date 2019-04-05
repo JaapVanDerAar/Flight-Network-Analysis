@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Mar 16 15:09:24 2019
+
+@author: Kirsten
+"""
 
 # module for preprocessing the data before analysis and visualisation
 import pandas as pd
@@ -20,7 +27,7 @@ def load_data_routes_from_file(file):
     df_routes.rename(columns= {" equipment":"equipment"}, inplace=True)
 
     # delete unnecessary columns
-    df_routes = df_routes.loc[:, ["source airport", "source airport ID", "destination airport", "destination airport ID"]]
+    df_routes = df_routes.loc[:, ["airline", "airline ID", "source airport", "source airport ID", "destination airport", "destination airport ID"]]
     
     # delete rows with unknown source or destination airports ID's
     df_routes = df_routes[(df_routes["source airport ID"]!="\\N") & (df_routes["destination airport ID"]!="\\N")]
@@ -41,11 +48,11 @@ def load_data_airports_from_file(file):
     df_airports = pd.read_csv(file, sep=',', header=None)
     
     # assign column names
-    header = ["airport ID", "name", "city", "country", "IATA", "ICAO", "lattitude", "longitude", "altitude", "timezone", "DST", "Tz Olson format", "type", "source"]
+    header = ["airport ID", "name", "city", "country", "IATA", "ICAO", "latitude", "longitude", "altitude", "timezone", "DST", "Tz Olson format", "type", "source"]
     df_airports.columns = header
     
     # delete unnecessary columns
-    df_airports = df_airports.loc[:, ["airport ID", "name", "city", "country", "lattitude", "longitude"]]
+    df_airports = df_airports.loc[:, ["airport ID", "name", "city", "country", "latitude", "longitude"]]
     
     # return dataframe to calling code
     return df_airports  
