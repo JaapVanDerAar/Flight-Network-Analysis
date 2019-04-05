@@ -58,10 +58,11 @@ df_merged = bpp.clean_dataframe(df_merged)
 while True:   
 # print options to user:
     choice = input("""What do you want to do?
-    0\tSee demo visualization of the flight network               
-    1\tVisualise flight network with self-chosen parameters
-    2\tAnalyze opportunities for new flight routes
-    3\tExit program.
+    0\tSee demo visualization of the flight network.
+    1\tInspect the dataframes               
+    2\tVisualise flight network with self-chosen parameters.
+    3\tCompare airlines.
+    4\tExit program.
     enter answer (0/1/2/3): """)
     
     # set default variables for the visualisation
@@ -94,11 +95,11 @@ while True:
         worldmap.visualize_on_worldmap(dataframe, directionality, node_size, node_visibility, edge_visibility)
     
 
-    if choice == "1": # USE THIS ONE FOR THE INSPECT THING
+    elif choice == "1": # USE THIS ONE FOR THE INSPECT THING
 
         module_inspect_data()
     
-    if choice == "2": # Visualize flight network
+    elif choice == "2": # Visualize flight network
         
         # 1st parameters: amount of airlines and airports
         map_amount = input("""What do you want to do?
@@ -198,8 +199,9 @@ while True:
      
             
     elif choice == "3": # THIS IS FOR THE COMPARISON
+        print('hi')
         
-    elif choice == "4": # Exit program
+    elif choice == "4": # Exit program 
         print("Thank you for using this program.")
         break 
     
