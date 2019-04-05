@@ -1,6 +1,8 @@
 # MAIN PROGRAM
 # handling the interaction with the user
-
+# 
+#
+# 
 #%% import modules and packages
 
 # self-defined modules
@@ -20,9 +22,10 @@ import networkx as nx
 # operator
 
 
-#%% load data sets
+#%% load and preprocess data
 
-# define filenames
+# define filenames which you want to load
+# in this case a csv with all flight routes and a csv with geographical locations of airports
 filename_routes = "routes.csv"
 filename_airports = "airports-extended.csv"
 
@@ -43,53 +46,11 @@ except Exception as err:
     print("Something went wrong")
     print(err)   
     
-
-#%% Inspect data -- MAKE THIS IN A NICER FORMAT
-
-# ask user whether he/she wants to get some basic information on the datasets
-while True:
-    data_inspection = input("do you want to get some information on the datasets? (y/n) ")
-
-    # if user says 'yes', print information on datasets
-    if data_inspection == "y":
-        
-        # print headers of the columns
-        print(df_routes.columns)
-        print(df_airports.columns) 
-        
-        # print unique values of df_routes
-        print('df_routes unique values per variable \n')
-        for column in df_routes.columns:
-            print(f'{column} = {len(df_routes[column].unique())}')
-        
-        print('\n\n')
-        
-        #print unique values of df_airports
-        print('df_airports unique values per variable \n')
-        for column in df_airports.columns:
-            print(f'{column} = {len(df_airports[column].unique())}')
-        
-        break
-        
-    # if user says 'no', print message accordingly
-    elif data_inspection == "n":
-        print("Okay let's move on to the visualisation then!")
-        break
-    
-    # if an invalid answer is given, print message accordingly
-    else:
-        print('Sorry, this is not an option, try again')
-
-
-
-#%% Data preprocessing
-    
 # merging of the two df's    
 df_merged = bpp.merge_dataframes(df_routes, df_airports)
 
 # cleaning of the merged df
 df_merged = bpp.clean_dataframe(df_merged)   
-
 
 
 #%% run program in loop until user chooses to exit
@@ -113,6 +74,7 @@ while True:
     # evaluate user choice and proceed accordingly
     if choice == "0": # see demo
        
+        
         demo_options = input("""What do you want to do?
         1\tShow both airports and flight routes             
         2\tShow only airports
@@ -130,8 +92,13 @@ while True:
             print('Sorry, this is not an option, we will use the default setting')  
     
         worldmap.visualize_on_worldmap(dataframe, directionality, node_size, node_visibility, edge_visibility)
-        
-    if choice == "1": # Visualize flight network
+    
+
+    if choice == "1": # USE THIS ONE FOR THE INSPECT THING
+
+        module_inspect_data()
+    
+    if choice == "2": # Visualize flight network
         
         # 1st parameters: amount of airlines and airports
         map_amount = input("""What do you want to do?
@@ -230,11 +197,9 @@ while True:
         worldmap.visualize_on_worldmap(dataframe, directionality, node_size, node_visibility, edge_visibility)
      
             
-    elif choice == "2": # Analyze opportunities for new flight routes
-        print("To do: return list of routes that are not/less used in the network of the 100 biggest hubs")
-        print("To do: create visualisation of 'missing' routes")
+    elif choice == "3": # THIS IS FOR THE COMPARISON
         
-    elif choice == "3": # Exit program
+    elif choice == "4": # Exit program
         print("Thank you for using this program.")
         break 
     
