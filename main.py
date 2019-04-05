@@ -107,7 +107,7 @@ while True:
         2\tSelect a specific amount of airlines
         3\tSelect a specific amount of airports
         4\tSelect a specific airport on name
-        enter answer (1/2/3): """)
+        enter answer (1/2/3/4): """)
         if map_amount == '1':
             print('You chose to plot all airlines and airports')
               
@@ -151,7 +151,8 @@ while True:
             print('You chose to plot a specific airport based on name')
             airport = str(input('Which airport do you want to select? Enter the three letter code in capitals '))
             
-            comp.specific_airport_df(df, airport)
+            unadjusted_dataframe = comp.specific_airport_df(dataframe, airport)
+            dataframe = bpp.clean_dataframe(unadjusted_dataframe)
  
 
         else:
