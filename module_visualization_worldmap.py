@@ -11,7 +11,7 @@ from mpl_toolkits.basemap import Basemap
 
 #%% Function to draw network on the world map
 
-def visualize_on_worldmap(dataframe, directionality, node_size):
+def visualize_on_worldmap(dataframe, directionality, node_size, node_visibility, edge_visibility):
         
     # create graph object from dataframe using NetworkX
     graph = nx.from_pandas_edgelist(dataframe, source = 'source airport', 
@@ -22,7 +22,7 @@ def visualize_on_worldmap(dataframe, directionality, node_size):
     print(graph_info)
 
     # draw mercator projection as background and set size
-    plt.figure(figsize = (10,9))
+    plt.figure(figsize = (15,20))
     m = Basemap(projection='merc',
                 llcrnrlon=-180,
                 llcrnrlat=-80,
@@ -53,10 +53,10 @@ def visualize_on_worldmap(dataframe, directionality, node_size):
     # now the parameters G (the graph) and pos (the positions) are set  
     
     # draw the nodes on the map and set other parameters for layout     
-    nx.draw_networkx_nodes(G = graph, pos = pos, node_list = graph.nodes(), node_size = node_size, node_color = 'r', alpha = 0.8)
+    nx.draw_networkx_nodes(G = graph, pos = pos, node_list = graph.nodes(), node_size = node_size, node_color = 'r', alpha = node_visibility)
     
     # draw the edges on the map and set other parameters for layout
-    nx.draw_networkx_edges(G = graph, pos = pos, edge_color='b', width = 2, alpha=0.2)
+    nx.draw_networkx_edges(G = graph, pos = pos, edge_color='b', width = 2, alpha = edge_visibility)
     
     # show plot
     # plt.tight_layout()
