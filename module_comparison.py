@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Apr  2 22:51:37 2019
+Created on Sat Apr  6 14:02:33 2019
 
 @author: Kirsten
 """
 
 #%% Import neccessary packages
 
+import base_preprocessing as bpp
+
 import networkx as nx
 import matplotlib.pyplot as plt
 import pandas as pd
 import operator
+
 
 #%%% Basic Functions
 
@@ -71,7 +74,10 @@ def hub_network_df(df, hub_table):
     # concatenate these two selections to create a df with all in and outcoming flights from hub airports
     df_hubnetwork = pd.concat([hub_df_source, hub_df_dest], axis=0)
     
-    return df_hubnetwork
+    # clean hub network dataframe
+    df_hubnetwork_clean = bpp.clean_dataframe(df_hubnetwork)
+    
+    return df_hubnetwork_clean
 
 
 
@@ -97,7 +103,10 @@ def specific_airport_df(df, airport):
     # concatenate these two selections to create a df with all in and outcoming flights from hub airports
     df_specific_airport = pd.concat([hub_df_source, hub_df_dest], axis=0)
     
-    return df_specific_airport
+    # clean hub network dataframe
+    df_specific_airport_clean = bpp.clean_dataframe(df_specific_airport)
+    
+    return df_specific_airport_clean
 
 
 
@@ -133,5 +142,28 @@ def hub_network_labels(hub_table):
         
     return labels    
 
+#%% Functions for airlines
+    
+def airline_table(dataframe):
+    df_top_airlines = dataframe['airline IATA code'].value_counts().reset_index()
+    
+    return df_top_airlines
 
-  
+# letting the user decide which airline to visualize, put an error detector on the input!
+def take_airlines(dataframe, sel_airline):
+    only_airl = dataframe[dataframe['airline IATA code'] == (sel_airline)]
+    airl_selected = only_airl["airline IATA code"].tolist()
+    dataframe = dataframe.loc[dataframe['airline IATA code'].isin(airl_selected)]
+    dataframe_clean = bpp.clean_dataframe(dataframe)
+
+    return dataframe_clean
+
+# letting the user decide how many airlines to visualize
+def take_nairlines(dataframe, airline_table, number):
+    df_airlines = airline_table[:number]
+    airl_list = df_airlines["index"].tolist()
+    dataframe = dataframe.loc[dataframe['airline IATA code'].isin(airl_list)]
+    dataframe_clean = bpp.clean_dataframe(dataframe)
+    
+    return dataframe_clean
+
