@@ -142,6 +142,7 @@ def hub_network_labels(hub_table):
         
     return labels    
 
+  
 #%% Functions for airlines
     
 def airline_table(dataframe):

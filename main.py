@@ -18,6 +18,7 @@
 
 #%% Import modules and packages
 
+
 # self-defined modules
 import base_preprocessing as bpp
 import module_visualization_worldmap as worldmap
@@ -35,7 +36,9 @@ import networkx as nx
 # operator
 
 
+
 #%% Load data
+
 
 # define filenames which you want to load
 # in this case a csv with all flight routes and a csv with geographical locations of airports
@@ -61,6 +64,7 @@ except Exception as err:
     print("Something went wrong")
     print(err)   
     
+
 # load airlines data into dataframe    
 try:    
     df_airlines = bpp.load_data_airlines_from_file(filename_airlines)
@@ -84,11 +88,14 @@ df_merged = bpp.left_merge_dataframes(df_merge_airlines_info, df_airports, "sour
 # reindex columns of dataframe
 df_merged = df_merged.reindex(columns=["airline IATA code", "airline ID", "name airline", "country airline", "source airport", "source airport ID", "destination airport", "destination airport ID", "airport name", "airport city", "airport country", "latitude", "longitude"])
 
+
 # cleaning of the merged dataframe
 df_merged = bpp.clean_dataframe(df_merged)   
 
 
+
 #%% Run program in loop until user chooses to exit
+
 
 while True:   
 # print options to user:
@@ -135,6 +142,7 @@ while True:
         pass
         #module_inspect_data()
         ### I PUT THIS IN COMMENTS BECAUSE THIS MODULE DOESN'T EXIST YET, GIVES ERROR
+
     
     elif choice == "2": # Visualize flight network
         
@@ -155,6 +163,7 @@ while True:
             1\tSelect the biggest airlines             
             2\tSelect a specific airline
             enter answer (1/2): """)
+
             
             if choice_airlines == '1':
                 print('You chose to plot the biggest airlines')
@@ -192,12 +201,14 @@ while True:
             2\tSelect a specific airports
             enter answer (1/2): """)  
             
+
             if choice_airports == '1':
                 print('You chose to plot the biggest airports')
                 map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
                 if 1 <= map_number_airports <= 50:
                     hubs_nr = map_number_airports
                     print(f'You chose to plot the top {hubs_nr} biggest airports')
+
                 
                     # determine what are the top 'n' most connected airports (hubs)
                     hub_table = comp.find_hubs_in_df(df_merged, hubs_nr)
@@ -220,6 +231,7 @@ while True:
             # comment Jaap: I think we can write a lot of things way cleaner, such as the lines above
             # these could go in on scentince: dataframe = bpp.clean_dataframe(comp.specific_airport_df(dataframe,airport))
             # comment Kirsten: for now i thought it would be better to include cleaning function into the creating the df function, so that's cleaner already;)
+
  
         else:
             print('Sorry, this is not an option, we will use the default setting')                  

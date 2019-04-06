@@ -38,15 +38,15 @@ def visualize_on_worldmap(dataframe, directionality, node_size, node_visibility,
     m.drawmapboundary()
     m.drawcountries()
 
-    # include longitude and lattitude lines if you want
+    # include longitude and latitude lines if you want
     m.drawparallels(np.arange(-90,90,30))
     m.drawmeridians(np.arange(-180,180,60))
 
     # create variable pos, that contains the position of each node
-    # Assign the longitude to mx and the lattitude to my
+    # Assign the longitude to mx and the latitude to my
     # Because you assign it to the m, which is the basemap, the coordinates are 
     # recalculated to the size of m
-    mx, my = m(dataframe['longitude'].values, dataframe['lattitude'].values)
+    mx, my = m(dataframe['longitude'].values, dataframe['latitude'].values)
     pos = {}
     for count, elem in enumerate (dataframe['source airport']):
          pos[elem] = (mx[count], my[count])    
