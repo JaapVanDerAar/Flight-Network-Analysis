@@ -2,7 +2,16 @@
 # handling the interaction with the user
 # 
 #
-# 
+# TO DO FOR MAIN:
+# - Add description of the main somewhere here 
+# - Add specific airport based on name 
+# - Add a plot of the top .. airports that will be selected, like in airports (so you see which airlines it will plot)
+# - Add inspect module and options
+# - Add comparison module
+# - Check consistency, does it print 'you chose ..' everywhere, and is there a default variable when the right option is not chosen?
+# - Put demo + programm option 2 into module
+# - Adding comments
+# - Write some code shorter
 #%% import modules and packages
 
 # self-defined modules
@@ -104,78 +113,78 @@ while True:
         # 1st parameters: amount of airlines and airports
         map_amount = input("""What do you want to do?
         1\tSelect all airlines and airports              
-        2\tSelect a specific amount of airlines
-        3\tSelect a specific amount of airports
-        4\tSelect a specific airport on name
-        5\tSelect a specific airline on name
-        enter answer (1/2/3/4): """)
+        2\tSelect specific airlines
+        3\tSelect specific airports
+        enter answer (1/2/3): """)
         if map_amount == '1':
             print('You chose to plot all airlines and airports')
               
             
         elif map_amount == '2':
-            print('You chose to plot a specific amount of airlines')
-            map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
-            if 1 <= map_number_airlines <= 50:
-                print(f'You chose to plot the top {map_number_airlines} biggest airlines')
-                ### CALL CREATE SPECIFIC AIRLINES FUNCTION HERE 
-                ### AND RETURN THE DATAFRAME AS:  dataframe = 
-                ### add cleaning function: dataframe = bpp.clean_dataframe(df_airports)
-                
-                ### MAYBE ALSO ADD OPTION TO DISPLAY SPECIFIC AIRLINE
-            else:
-                print('Sorry, this is not an option, we will use the default setting')   
-            
-        elif map_amount == '3':
-            print('You chose to plot a specific amount of airports')
-            map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
-            
-            ### MAYBE ALSO ADD OPTION TO DISPLAY SPECIFIC AIRPORT. i already made a function
-            
-            if 1 <= map_number_airports <= 50:
-                hubs_nr = map_number_airports
-                print(f'You chose to plot the top {hubs_nr} biggest airports')
-                
-                # determine what are the top 'n' most connected airports (hubs)
-                hub_table = comp.find_hubs_in_df(df_merged, hubs_nr)
-                
-                # create a dataframe with only the in and outcoming flights from hub airports
-                df_hubs = comp.hub_network_df(df_merged, hub_table)
-                
-                # clean dataframe from airports that do not have incoming flights
-                dataframe = bpp.clean_dataframe(df_hubs)
-                
-                # show barplot of amount of flight routes (edges) per hub airport
-                comp.barplot_hubs(hub_table)
-
-        elif map_amount == '4':
-            print('You chose to plot a specific airport based on name')
-            airport = str(input('Which airport do you want to select? Enter the three letter code in capitals '))
-            
-            unadjusted_dataframe = comp.specific_airport_df(dataframe, airport)
-            dataframe = bpp.clean_dataframe(unadjusted_dataframe)
-         
-        elif map_amount == '5':    
-            print('You chose to plot a specific airport based on name')
-            airline_table = comp.airline_table(df_merged)
-            map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
-            if 1 <= map_number_airlines <= 50:
-                print(f'You chose to plot the top {map_number_airlines} biggest airlines')
-                
-                ### AMOUNT OF SPECIFIC AIRLINES FUNCTION
-                unadjusted_dataframe=comp.take_nairlines(df_merged, airline_table, map_number_airlines)
-                dataframe = bpp.clean_dataframe(unadjusted_dataframe)
+            print('You chose to plot specific airlines')
+            choice_airlines = input("""What do you want to do?
+            1\tSelect the biggest airlines             
+            2\tSelect a specific airline
+            enter answer (1/2): """)
+            if choice_airlines == '1':
+                print('You chose to plot the biggest airlines')
+                map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
+                if 1 <= map_number_airlines <= 50:
+                    print(f'You chose to plot the top {map_number_airlines} biggest airlines')
+                    airline_table = comp.airline_table(df_merged)
+                    unadjusted_dataframe=comp.take_nairlines(df_merged, airline_table, map_number_airlines)
+                    dataframe = bpp.clean_dataframe(unadjusted_dataframe)
+                else:
+                    print('Sorry, this is not an option, we will use the default setting')  
+            elif choice_airlines == '2':   
+                print('You chose to plot a specific airline based on name')
                 ### CALL CREATE SPECIFIC AIRLINES FUNCTION HERE, input selected_airline still to be designed 
                 #df_specairlines = comp.take_airlines(df_merged, selected_airline)
                 
-                ### selected_airline = str(input("Which airline do you want to visualize? (2 letters code, CAPITAL LETTERS) "))
+                ### selected_airline = str(input("Which airline do you want to visualize? (3 letters code, CAPITAL LETTERS) "))
 
                 ### AND RETURN THE DATAFRAME AS:  dataframe = 
                 
                 ### add cleaning function: dataframe = bpp.clean_dataframe(df_nairlines)
                 ### dataframe = bpp.clean_dataframe(df_specairlines)
+            
+            
+        elif map_amount == '3':
+            print('You chose to plot specific airports')
+            choice_airports = input("""What do you want to do?
+            1\tSelect the biggest airports             
+            2\tSelect a specific airports
+            enter answer (1/2): """)           
+            if choice_airports == '1':
+                print('You chose to plot the biggest airports')
+                map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
+                if 1 <= map_number_airports <= 50:
+                    hubs_nr = map_number_airports
+                    print(f'You chose to plot the top {hubs_nr} biggest airports')
+                
+                    # determine what are the top 'n' most connected airports (hubs)
+                    hub_table = comp.find_hubs_in_df(df_merged, hubs_nr)
+                
+                    # create a dataframe with only the in and outcoming flights from hub airports
+                    df_hubs = comp.hub_network_df(df_merged, hub_table)
+                
+                    # clean dataframe from airports that do not have incoming flights
+                    dataframe = bpp.clean_dataframe(df_hubs)
+                
+                    # show barplot of amount of flight routes (edges) per hub airport
+                    comp.barplot_hubs(hub_table)
+                else:
+                    print('Sorry, this is not an option, we will use the default setting')  
+            elif choice_airports == '2':
+                print('You chose to plot a specific airport based on name')
+                airport = str(input('Which airport do you want to select? Enter the three letter code in capitals '))
+            
+                unadjusted_dataframe = comp.specific_airport_df(dataframe, airport)
+                dataframe = bpp.clean_dataframe(unadjusted_dataframe)
+            # comment Jaap: I think we can write a lot of things way cleaner, such as the lines above
+            # these could go in on scentince: dataframe = bpp.clean_dataframe(comp.specific_airport_df(dataframe,airport))
+         
  
-
         else:
             print('Sorry, this is not an option, we will use the default setting')                  
     
@@ -226,7 +235,7 @@ while True:
      
             
     elif choice == "3": # THIS IS FOR THE COMPARISON
-        print('hi')
+        print('hi') # create module for this
 
                 
         
