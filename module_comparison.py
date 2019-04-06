@@ -1,10 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Apr  2 22:51:37 2019
-
-@author: Kirsten
-"""
+# !!! for this script, first run the load data and preprocessing cells of main.py
+# for this you should also have the preprocessing module in the same directory
+# result: you should have the merged dataframe as variable
 
 #%% Import neccessary packages
 
@@ -133,12 +129,12 @@ def hub_network_labels(hub_table):
         
     return labels    
 
-#%%
+#%% function to create a dataframe with the airlines ranked by n. of flights
 def airline_table(dataframe):
     df_top_airlines = dataframe['airline'].value_counts().reset_index()
     return df_top_airlines
 
-#letting the user decide which airline to visualize, put an error detector on the input!
+#function to create a dataframe with the selected airline only 
 def take_airlines(dataframe, sel_airline):
     only_airl = dataframe[dataframe['airline'] == (sel_airline)]
     airl_selected = only_airl["airline"].tolist()
@@ -146,10 +142,17 @@ def take_airlines(dataframe, sel_airline):
 
     return dataframe
 
-#letting the user decide how many airlines to visualize
+#function to create a dataframe with the n. of seleced airlines only 
 def take_nairlines(dataframe, airline_table, number):
     df_airlines = airline_table[:number]
     airl_list = df_airlines["index"].tolist()
     dataframe = dataframe.loc[dataframe['airline'].isin(airl_list)]
     
-    return dataframe
+    return dataframe 
+
+# function to create bar plot of top airlines
+def barplot_airlines(dataframe):
+    # create bar plot of hubs
+    dataframe.plot.bar(x = "index", y = "airline", legend=False)
+    plt.ylabel("flight routes")
+    plt.show()
