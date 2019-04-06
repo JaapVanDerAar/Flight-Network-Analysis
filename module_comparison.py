@@ -1,10 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Apr  6 14:02:33 2019
-
-@author: Kirsten
-"""
+### MODULE COMPARISON
 
 #%% Import neccessary packages
 
@@ -81,15 +75,6 @@ def hub_network_df(df, hub_table):
 
 
 
-# function to create bar plot of top hubs
-def barplot_hubs(hub_table):
-
-    # create bar plot of hubs
-    hub_table.plot.bar(x = "airport", y = "degree", legend=False)
-    plt.ylabel("flight routes")
-    plt.show()
-
-
 
 # create a dataframe with only the in and outcoming flights from a specific airport
 def specific_airport_df(df, airport):
@@ -142,11 +127,23 @@ def hub_network_labels(hub_table):
         
     return labels    
 
-  
+
+
+# function to create bar plot from table
+def barplot_from_df(table, x = None, y = None, ylabel = None):
+    
+    # create bar plot of table
+    table.plot.bar(x, y, legend=False)
+    plt.ylabel(ylabel)
+    plt.show()
+    
+
 #%% Functions for airlines
     
 def airline_table(dataframe):
     df_top_airlines = dataframe['airline IATA code'].value_counts().reset_index()
+    df_top_airlines.rename(columns= {"airline IATA code":"flight_routes_nr"}, inplace=True)
+    df_top_airlines.rename(columns= {"index":"airline IATA code"}, inplace=True)
     
     return df_top_airlines
 
