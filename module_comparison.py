@@ -1,4 +1,3 @@
-### MODULE COMPARISON
 
 #%% Import neccessary packages
 
@@ -129,6 +128,10 @@ def hub_network_labels(hub_table):
 
 
 
+#%% function to create a dataframe with the airlines ranked by n. of flights
+
+
+
 # function to create bar plot from table
 def barplot_from_df(table, x = None, y = None, ylabel = None):
     
@@ -140,6 +143,7 @@ def barplot_from_df(table, x = None, y = None, ylabel = None):
 
 #%% Functions for airlines
     
+
 def airline_table(dataframe):
     df_top_airlines = dataframe['airline IATA code'].value_counts().reset_index()
     df_top_airlines.rename(columns= {"airline IATA code":"flight_routes_nr"}, inplace=True)
@@ -147,7 +151,9 @@ def airline_table(dataframe):
     
     return df_top_airlines
 
-# letting the user decide which airline to visualize, put an error detector on the input!
+
+#function to create a dataframe with the selected airline only 
+=======
 def take_airlines(dataframe, sel_airline):
     only_airl = dataframe[dataframe['airline IATA code'] == (sel_airline)]
     airl_selected = only_airl["airline IATA code"].tolist()
@@ -156,12 +162,22 @@ def take_airlines(dataframe, sel_airline):
 
     return dataframe_clean
 
-# letting the user decide how many airlines to visualize
+#function to create a dataframe with the n. of seleced airlines only 
+
 def take_nairlines(dataframe, airline_table, number):
     df_airlines = airline_table[:number]
     airl_list = df_airlines["index"].tolist()
     dataframe = dataframe.loc[dataframe['airline IATA code'].isin(airl_list)]
     dataframe_clean = bpp.clean_dataframe(dataframe)
     
+    return dataframe 
+
+# function to create bar plot of top airlines
+def barplot_airlines(dataframe):
+    # create bar plot of hubs
+    dataframe.plot.bar(x = "index", y = "airline", legend=False)
+    plt.ylabel("flight routes")
+    plt.show()
+
     return dataframe_clean
 
