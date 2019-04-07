@@ -9,7 +9,6 @@
 # - Add specific airport based on name 
 # - Add a plot of the top .. airlines that will be selected, like in airports (so you see which airlines it will plot)
 # - Add inspect module and options
-# - Add comparison module
 # - Check consistency, does it print 'you chose ..' everywhere, and is there a default variable when the right option is not chosen?
 # - Put demo + programm option 2 into module
 # - Adding comments
@@ -23,6 +22,7 @@ import base_preprocessing as bpp
 import module_visualization_worldmap as worldmap
 import module_comparison as comp
 import module_inspect_data as inspect
+import module_comparison_airlines as comp_air
 
 # other modules
 import networkx as nx
@@ -99,7 +99,7 @@ while True:
     2\tVisualise flight network with self-chosen parameters.
     3\tCompare airlines.
     4\tExit program.
-    enter answer (0/1/2/3): """)
+    enter answer (0/1/2/3/4): """)
     
     # set default variables for the visualisation
     dataframe = df_merged
@@ -179,15 +179,10 @@ while True:
                     
             elif choice_airlines == '2':   
                 print('You chose to plot a specific airline based on name')
-                ### CALL CREATE SPECIFIC AIRLINES FUNCTION HERE, input selected_airline still to be designed 
-                #df_specairlines = comp.take_airlines(df_merged, selected_airline)
                 
-                ### selected_airline = str(input("Which airline do you want to visualize? (3 letters code, CAPITAL LETTERS) "))
-
-                ### AND RETURN THE DATAFRAME AS:  dataframe = 
+                # create a dataframe with only the in- and outcoming flights of the selected airport through user
+                dataframe = comp.define_airline_through_user_input(df_merged)
                 
-                ### add cleaning function: dataframe = bpp.clean_dataframe(df_nairlines)
-                ### dataframe = bpp.clean_dataframe(df_specairlines)
             
             
         elif map_amount == '3':
@@ -217,12 +212,9 @@ while True:
                     
             elif choice_airports == '2':
                 print('You chose to plot a specific airport based on name')
-                airport = str(input('Which airport do you want to select? Enter the three letter code in capitals '))
                 
-                # create a dataframe with only the in- and outcoming flights of the selected airport
-                dataframe = comp.specific_airport_df(dataframe, airport)
-                
-                # PUT IN ERROR HANDLING IF AIRPORT CODE IS INCORRECT
+                # create a dataframe with only the in- and outcoming flights of the selected airport through user
+                dataframe = comp.define_airport_through_user_input(df_merged)
 
             # comment Jaap: I think we can write a lot of things way cleaner, such as the lines above
             # these could go in on scentince: dataframe = bpp.clean_dataframe(comp.specific_airport_df(dataframe,airport))
@@ -278,8 +270,19 @@ while True:
      
             
     elif choice == "3": # THIS IS FOR THE COMPARISON
-        print('hi') # create module for this
-
+        print("You chose to compare airlines")
+        
+        # let user specify airlines to visualize and create dataframes for both 
+        df_airline1 = comp.define_airline_through_user_input(df_merged)
+        print("You choose your first airline. Now select another one to compare!")
+        
+        df_airline2 = comp.define_airline_through_user_input(df_merged)
+        
+        # visualize airline networks on worldmap
+        comp_air.visualize_two_networks_on_worldmap(df_airline1, df_airline2)  
+        
+        # print network metrics table
+        comp_air.create_graph_metrics_table(df_airline1, df_airline2)
                 
         
     elif choice == "4": # Exit program 
