@@ -127,8 +127,10 @@ while True:
         else:
             print('Sorry, this is not an option, we will use the default setting')  
             
-        # visualize demo flight network    
-        worldmap.visualize_on_worldmap(dataframe, directionality, node_size, node_visibility, edge_visibility)
+        # visualize demo flight network 
+        worldmap.visualize_on_worldmap(dataframe, directionality)
+    
+        #worldmap.visualize_on_worldmap(dataframe, directionality, node_size, node_visibility, edge_visibility)
     
 
     elif choice == "1": # Inspect data
@@ -166,22 +168,16 @@ while True:
                     airline_table = comp.airline_table(df_merged)
 
                     #dataframe with the flights of the desired n.of airlines 
-                    unadjusted_dataframe=comp.take_nairlines(df_merged, airline_table, map_number_airlines)
-                    #clean the dataframe to have the position of every airport to plot nicely
-                    dataframe = bpp.clean_dataframe(unadjusted_dataframe)
-                     # show barplot of amount of flight routes (edges) per hub airport
-                    comp.barplot_airlines(df_airlines)
-            
-
-                    
-                    # create a dataframe with only the flights of the selected airlines
                     dataframe = comp.take_nairlines(df_merged, airline_table, map_number_airlines)
-                    
+
+                     # show barplot of amount of flight routes (edges) per hub airport
+                    #comp.barplot_airlines(df_airlines)
+
                     # take top n rows of table specifief by number
-                    top_table = airline_table[:map_number_airlines]
+                    #top_table = airline_table[:map_number_airlines]
                     
                     # show barplot of amount of flight routes per airline
-                    comp.barplot_from_df(top_table, x="airline IATA code" , y="flight_routes_nr" , ylabel="flight routes")
+                    #comp.barplot_from_df(top_table, x="airline IATA code" , y="flight_routes_nr" , ylabel="flight routes")
                     
 
                 else:
@@ -264,12 +260,12 @@ while True:
             print('You chose to display airport size dependent on degree')
             
             # create graph object from dataframe defined as 1st parameter
-            graph = comp.create_graph_object(dataframe)
+            graph = worldmap.create_graph_object(dataframe)
             
             # ADJUST! now degree of node changes dependent on subnetwork.
             # degree should be static, based on whole network!
             # use graph object to calculate degree per node and write to list
-            node_size = comp.node_size_degree(graph)
+            node_size = worldmap.node_size_degree(graph)
             
         else:
             print('Sorry, this is not an option, we will use the default setting')
@@ -284,12 +280,12 @@ while True:
         
         # let user specify airlines to visualize and create dataframes for both 
         df_airline1 = comp.define_airline_through_user_input(df_merged)
-        print("You choose your first airline. Now select another one to compare!")
+        print("\nYou choose your first airline. Now select another one to compare!")
         
         df_airline2 = comp.define_airline_through_user_input(df_merged)
         
         # visualize airline networks on worldmap
-        comp_air.visualize_two_networks_on_worldmap(df_airline1, df_airline2)  
+        worldmap.visualize_two_networks_on_worldmap(df_airline1, df_airline2)  
         
         # print network metrics table
         comp_air.create_graph_metrics_table(df_airline1, df_airline2)
