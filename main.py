@@ -4,11 +4,8 @@
 # handling the interaction with the user
 # 
 #
-# TO DO FOR MAIN:
-# - Add description of the main somewhere here 
-# - Add specific airport based on name 
-# - Add a plot of the top .. airlines that will be selected, like in airports (so you see which airlines it will plot)
-# - Add inspect module and options
+
+
 # - Check consistency, does it print 'you chose ..' everywhere, and is there a default variable when the right option is not chosen?
 # - Put demo + programm option 2 into module
 # - Adding comments
@@ -125,12 +122,12 @@ while True:
             print('You chose to show only the flight routes')
             node_visibility = 0
         else:
-            print('Sorry, this is not an option, we will use the default setting')  
+            print('Sorry, this is not an option, we will use the default settubg: all airlines and airports')
             
         # visualize demo flight network 
-        worldmap.visualize_on_worldmap(dataframe, directionality)
+        # worldmap.visualize_on_worldmap(dataframe, directionality)
     
-        #worldmap.visualize_on_worldmap(dataframe, directionality, node_size, node_visibility, edge_visibility)
+        worldmap.visualize_on_worldmap(dataframe, directionality, node_size, node_visibility, edge_visibility)
     
 
     elif choice == "1": # Inspect data
@@ -165,16 +162,17 @@ while True:
                     print(f'You chose to plot the top {map_number_airlines} biggest airlines')
 
                     #create a table with the top airlines with n. of flights
+                    airline_table_name = comp.airline_table_name(df_merged)
                     airline_table = comp.airline_table(df_merged)
-
                     #dataframe with the flights of the desired n.of airlines 
                     dataframe = comp.take_nairlines(df_merged, airline_table, map_number_airlines)
 
-                     # show barplot of amount of flight routes (edges) per hub airport
-                    #comp.barplot_airlines(df_airlines)
-
                     # take top n rows of table specifief by number
-                    #top_table = airline_table[:map_number_airlines]
+                    top_table = airline_table_name[:map_number_airlines]
+                    # show barplot of amount of flight routes (edges) per hub airport
+                    comp.barplot_airlines(top_table)
+
+
                     
                     # show barplot of amount of flight routes per airline
                     #comp.barplot_from_df(top_table, x="airline IATA code" , y="flight_routes_nr" , ylabel="flight routes")
@@ -209,7 +207,7 @@ while True:
                     hub_table = comp.find_hubs_in_df(df_merged, hubs_nr)
                 
                     # create a dataframe with only the in- and outcoming flights from hub airports
-                    df_hubs = comp.hub_network_df(df_merged, hub_table)
+                    dataframe = comp.hub_network_df(df_merged, hub_table)
                 
                     # show barplot of amount of flight routes (edges) per hub airport
                     comp.barplot_from_df(hub_table, x="airport" , y="degree", ylabel="flight routes")
@@ -222,10 +220,6 @@ while True:
                 # create a dataframe with only the in- and outcoming flights of the selected airport through user
                 dataframe = comp.define_airport_through_user_input(df_merged)
 
-            # comment Jaap: I think we can write a lot of things way cleaner, such as the lines above
-            # these could go in on scentince: dataframe = bpp.clean_dataframe(comp.specific_airport_df(dataframe,airport))
-            # comment Kirsten: for now i thought it would be better to include cleaning function into the creating the df function, so that's cleaner already;)
- 
         else:
             print('Sorry, this is not an option, we will use the default setting')                  
     
@@ -284,6 +278,7 @@ while True:
         
         df_airline2 = comp.define_airline_through_user_input(df_merged)
         
+
         # visualize airline networks on worldmap
         worldmap.visualize_two_networks_on_worldmap(df_airline1, df_airline2)  
         

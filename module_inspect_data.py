@@ -27,7 +27,7 @@ def inspect_data(routes, airports, merged):
     inspect_option = input("""What do you want to do?
     1\tInspect the variables of a used dataframe          
     2\tInspect unique values of a used dataframe
-    3\tShow only flight routes
+    3\tShow biggest airports/airlines
     enter answer (1/2/3): """)
     
     if inspect_option == '1':
@@ -63,24 +63,25 @@ def inspect_data(routes, airports, merged):
     elif inspect_option == '3':
         extra_options = input("""What would you want to do?
         1\tShow in which countries most airports are located          
-        2\tShow 10 biggest airports based on flights
-        3\tShow 10 biggest airports based on degree
+        2\tShow 10 biggest airports based on number of incoming flights
+        3\tShow 10 biggest airports based on degree (most connected)
         4\tShow 10 biggest airlines
         enter answer (1/2/3/4): """)
         if extra_options == '1':
             print('\nThe 10 countries with most airports: \n')
             merged['airport country'].value_counts()[0:10].plot.pie()
+            plt.show()
         elif extra_options == '2':
-            print('\nThe 10 biggest airports based on flights: \n')
+            print('\nThe 10 biggest airports based on number of incoming flights: \n')
             inspect_most_flights_airports(merged)
         elif extra_options == '3': 
-            print('\nThe 10 biggest airports based on degree: \n')
+            print('\nThe 10 biggest airports based on degree (most connected): \n')
             hub_table = comp.find_hubs_in_df(merged, 10)
             comp.barplot_from_df(hub_table, x="airport" , y="degree", ylabel="flight routes")
         elif extra_options == '4':
             print('\nThe 10 biggest airlines: \n')
-            print(comp.airline_table(merged)[:10])
-            ####### ADD GIULIO'S BARPLOT AIRLINES FUNCTION HERE
+            df_table_airlines = comp.airline_table_name(merged)[:10]
+            comp.barplot_airlines(df_table_airlines)
         else:
             print('Sorry, this is not an option, we will use the default setting')
     else:
