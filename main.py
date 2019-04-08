@@ -161,9 +161,18 @@ while True:
                 
                 if 1 <= map_number_airlines <= 50:
                     print(f'You chose to plot the top {map_number_airlines} biggest airlines')
-                    
-                    # determine what are the top 'n' airlines with the most flights
+
+                    #create a table with the top airlines with n. of flights
                     airline_table = comp.airline_table(df_merged)
+
+                    #dataframe with the flights of the desired n.of airlines 
+                    unadjusted_dataframe=comp.take_nairlines(df_merged, airline_table, map_number_airlines)
+                    #clean the dataframe to have the position of every airport to plot nicely
+                    dataframe = bpp.clean_dataframe(unadjusted_dataframe)
+                     # show barplot of amount of flight routes (edges) per hub airport
+                    comp.barplot_airlines(df_airlines)
+            
+
                     
                     # create a dataframe with only the flights of the selected airlines
                     dataframe = comp.take_nairlines(df_merged, airline_table, map_number_airlines)
@@ -174,6 +183,7 @@ while True:
                     # show barplot of amount of flight routes per airline
                     comp.barplot_from_df(top_table, x="airline IATA code" , y="flight_routes_nr" , ylabel="flight routes")
                     
+
                 else:
                     print('Sorry, this is not an option, we will use the default setting') 
                     
