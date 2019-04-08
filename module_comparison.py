@@ -1,3 +1,5 @@
+#%% MODULE COMPARISON
+
 
 #%% Import neccessary packages
 
@@ -96,12 +98,13 @@ def specific_airport_df(df, airport):
 
 
 
-#%% function to create a dataframe with the airlines ranked by n. of flights
 
 
 
-# function to create bar plot from table
-def barplot_from_df(table, x = None, y = None, ylabel = None):
+
+#%% function to create bar plot from table
+    
+def barplot_from_df(table, x, y, ylabel = None):
     
     # create bar plot of table
     table.plot.bar(x, y, legend=False)
@@ -120,7 +123,6 @@ def airline_table(dataframe):
     return df_top_airlines
 
 
-
 def airline_table_name(dataframe):
     df_top_airlines = dataframe['name airline'].value_counts().reset_index()
     df_top_airlines.rename(columns= {'name airline':'flight_routes_nr'}, inplace=True)
@@ -129,11 +131,11 @@ def airline_table_name(dataframe):
     return df_top_airlines
 
 #function to create a dataframe with the selected airline only 
-
+    
 def take_airlines(dataframe, sel_airline):
-    only_airl = dataframe[dataframe['airline IATA code'] == (sel_airline)]
-    airl_selected = only_airl["airline IATA code"].tolist()
-    dataframe = dataframe.loc[dataframe['airline IATA code'].isin(airl_selected)]
+    dataframe = dataframe[dataframe['airline IATA code'] == (sel_airline)]
+    #airl_selected = only_airl["airline IATA code"].tolist()
+    #dataframe = dataframe.loc[dataframe['airline IATA code'].isin(airl_selected)]
     dataframe_clean = bpp.clean_dataframe(dataframe)
 
     return dataframe_clean
@@ -164,26 +166,96 @@ def barplot_airlines(dataframe):
 #%%
     
 def define_airline_through_user_input(df):
-    airline = input("Which airline do you want to visualise? ")
     
-    df_airline = take_airlines(df, airline)
+    # create a list of unique airlines
+    unique_airlines_list = df["airline IATA code"].drop_duplicates().tolist()
     
-    # df_airline_clean = bpp.clean_dataframe(df_airline)
+    # initialise input to false
+    input_airline = False
     
-    return df_airline
+    # ask user for an airline to visualise on the map until a valid input is given
+    while input_airline == False:
+        
+        airline = input("""
+        Which airline do you want to visualise? Enter the 2-letter IATA code in 
+        capital letters.
+        
+        For inspiration see the 10 airlines with the most flight routes: 
+                        
+        FR\tRyanair
+        AA\tAmerican Airlines
+        UA\tUnited Airlines
+        DL\tDelta Air Lines
+        US\tUS Airways
+        CZ\tChina Southern Airlines
+        MU\tChina Eastern Airlines
+        CA\tAir China
+        WN\tSouthwest Airlines
+        U2\teasyJet
+        
+        Enter your answer here: """)
+        
+        # if input is in the list with unique airlines, proceed
+        if airline in unique_airlines_list:   
+            
+            # create a dataframe with only the fligths of the specified airline
+            df_airline = take_airlines(df, airline)
+            
+            input_airline == True
+            
+            return df_airline
+        
+        # if an invalid input is given, give message accordingly and let user try again    
+        else: 
+            print("This is not a valid input, try again")
+    
+    
     
     
     
 def define_airport_through_user_input(df):
     
-    airport = input("Which airport do you want to visualise? ")
+    # create a list of unique airlines
+    unique_airport_list = df["source airport"].drop_duplicates().tolist()
     
-    df_airport = specific_airport_df(df, airport)
+    # initialise input to false
+    input_airport = False
     
-    df_airport_clean = bpp.clean_dataframe(df_airport)
+    # ask user for an airline to visualise on the map until a valid input is given
+    while input_airport == False:
     
-    return df_airport_clean    
-    
+        airport = input("""
+        Which airport do you want to visualise? Enter the 3-letter IATA code in 
+        capital letters.
+        
+        For inspiration see the 10 airports with the most flight routes: 
+                        
+        AMS\tAmsterdam Airport Schiphol
+        FRA\tFrankfurt am Main International Airport
+        CDG\tCharles de Gaulle International Airport
+        IST\tAtatürk International Airport
+        ATL\tHartsfield Jackson Atlanta International Airport
+        PEK\tBeijing Capital International Airport
+        ORD\tChicago O'Hare International Airport
+        MUC\tMunich International Airport
+        DME\tDomodedovo International Airport
+        DFW\tDallas Fort Worth International Airport
+        
+        Enter your answer here: """)
+        
+        # if input is in the list with unique airlines, proceed
+        if airport in unique_airport_list:   
+            
+            # create a dataframe with only the fligths of the specified airline
+            df_airport = specific_airport_df(df, airport)
+            
+            input_airport == True
+            
+            return df_airport
+        
+        # if an invalid input is given, give message accordingly and let user try again    
+        else: 
+            print("This is not a valid input, try again")
     
     
     
