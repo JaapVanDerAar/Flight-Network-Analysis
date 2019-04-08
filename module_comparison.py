@@ -120,6 +120,14 @@ def airline_table(dataframe):
     return df_top_airlines
 
 
+
+def airline_table_name(dataframe):
+    df_top_airlines = dataframe['name airline'].value_counts().reset_index()
+    df_top_airlines.rename(columns= {'name airline':'flight_routes_nr'}, inplace=True)
+    df_top_airlines.rename(columns= {'index':'name airline'}, inplace=True)
+    
+    return df_top_airlines
+
 #function to create a dataframe with the selected airline only 
 
 def take_airlines(dataframe, sel_airline):
@@ -129,6 +137,7 @@ def take_airlines(dataframe, sel_airline):
     dataframe_clean = bpp.clean_dataframe(dataframe)
 
     return dataframe_clean
+
 
 #function to create a dataframe with the n. of seleced airlines only 
 
@@ -142,10 +151,9 @@ def take_nairlines(dataframe, airline_table, number):
 
 # function to create bar plot of top airlines
 def barplot_airlines(dataframe):
-    dataframe.plot.bar(x = "index", y = "airline", legend=False)
+    dataframe.plot.bar(x = "name airline", y = "flight_routes_nr", legend=False)
     plt.ylabel("flight routes")
     plt.show()
-
 
 
 
@@ -156,19 +164,19 @@ def barplot_airlines(dataframe):
 #%%
     
 def define_airline_through_user_input(df):
-    airline = input("Which airline do you want to visualise?")
+    airline = input("Which airline do you want to visualise? ")
     
     df_airline = take_airlines(df, airline)
     
-    df_airline_clean = bpp.clean_dataframe(df_airline)
+    # df_airline_clean = bpp.clean_dataframe(df_airline)
     
-    return df_airline_clean
+    return df_airline
     
     
     
 def define_airport_through_user_input(df):
     
-    airport = input("Which airport do you want to visualise?")
+    airport = input("Which airport do you want to visualise? ")
     
     df_airport = specific_airport_df(df, airport)
     
