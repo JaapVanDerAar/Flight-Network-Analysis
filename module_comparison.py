@@ -11,7 +11,8 @@ import operator
 
 #%%% Basic Functions
 
-# function to create a graph object from dataframe
+### ALSO IN VISUALISATION_WORLDMAP, DELETE IN ONE OF TWO
+# function to create a graph object from dataframe 
 def create_graph_object(df):
     graph = nx.from_pandas_edgelist(df, source = 'source airport', \
                                  target = 'destination airport')
@@ -94,39 +95,6 @@ def specific_airport_df(df, airport):
 
 
 
-    
-#%% functions for visualization options
-    
-# function to create a node size list dependent on degree 
-def node_size_degree(graph):
-    
-    # calculate degree of each node and save as dictionary
-    degree = dict(graph.degree())
-
-    # create a list with node sizes by multiplying the node degree with 1.5 for each node
-    node_size_list = []
-    for h in degree.values():
-        node_size_list = node_size_list + [h * 1.5]
-    
-    return node_size_list
-
-
-# function to create a label dictionary for hubs
-def hub_network_labels(hub_table):
-    
-    # create a list of hubs from the table
-    hublist = hub_table["airport"].tolist()
-    
-    # create empty dictionary for labels
-    labels = {}
-
-    for hub in hublist:
-        # write node (airport) name for every hub in dictionary
-        labels[hub] = hub    
-        
-    return labels    
-
-
 
 #%% function to create a dataframe with the airlines ranked by n. of flights
 
@@ -146,14 +114,14 @@ def barplot_from_df(table, x = None, y = None, ylabel = None):
 
 def airline_table(dataframe):
     df_top_airlines = dataframe['airline IATA code'].value_counts().reset_index()
-    df_top_airlines.rename(columns= {"airline IATA code":"flight_routes_nr"}, inplace=True)
-    df_top_airlines.rename(columns= {"index":"airline IATA code"}, inplace=True)
+    df_top_airlines.rename(columns= {'airline IATA code':'flight_routes_nr'}, inplace=True)
+    df_top_airlines.rename(columns= {'index':'airline IATA code'}, inplace=True)
     
     return df_top_airlines
 
 
 #function to create a dataframe with the selected airline only 
-=======
+
 def take_airlines(dataframe, sel_airline):
     only_airl = dataframe[dataframe['airline IATA code'] == (sel_airline)]
     airl_selected = only_airl["airline IATA code"].tolist()
@@ -166,18 +134,49 @@ def take_airlines(dataframe, sel_airline):
 
 def take_nairlines(dataframe, airline_table, number):
     df_airlines = airline_table[:number]
-    airl_list = df_airlines["index"].tolist()
+    airl_list = df_airlines['airline IATA code'].tolist()
     dataframe = dataframe.loc[dataframe['airline IATA code'].isin(airl_list)]
     dataframe_clean = bpp.clean_dataframe(dataframe)
     
-    return dataframe 
+    return dataframe_clean 
 
 # function to create bar plot of top airlines
 def barplot_airlines(dataframe):
-    # create bar plot of hubs
     dataframe.plot.bar(x = "index", y = "airline", legend=False)
     plt.ylabel("flight routes")
     plt.show()
 
-    return dataframe_clean
+
+
+
+
+
+
+
+#%%
+    
+def define_airline_through_user_input(df):
+    airline = input("Which airline do you want to visualise?")
+    
+    df_airline = take_airlines(df, airline)
+    
+    df_airline_clean = bpp.clean_dataframe(df_airline)
+    
+    return df_airline_clean
+    
+    
+    
+def define_airport_through_user_input(df):
+    
+    airport = input("Which airport do you want to visualise?")
+    
+    df_airport = specific_airport_df(df, airport)
+    
+    df_airport_clean = bpp.clean_dataframe(df_airport)
+    
+    return df_airport_clean    
+    
+    
+    
+    
 
