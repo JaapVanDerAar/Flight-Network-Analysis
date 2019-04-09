@@ -1,3 +1,4 @@
+
 ### MODULE_INSPECT_DATA.PY
 
 ### This is the inspect data module. In here you can find several functions:
@@ -5,10 +6,12 @@
 ### - Functions to inspect several options
 ### - A function that includes the program for inspecting the data
 
-#%% Necessary packages for this module
+#%% Necessary modules and packages for this module
+
+import module_settings_airlines_airports as setair
 
 import matplotlib.pyplot as plt
-import module_comparison as comp
+
 
 #%% functions for inspecting several options
 
@@ -30,6 +33,11 @@ def inspect_most_flights_airports(df):
     plt.ylabel("flight routes")
     plt.show()
     
+# function to create bar plot from table
+def barplot_from_df(table, x, y, ylabel = None):
+    table.plot.bar(x, y, legend=False)
+    plt.ylabel(ylabel)
+    plt.show()    
     
 #%% METAFUNCTION FOR INSPECTING DATA
    
@@ -38,7 +46,7 @@ def inspect_data(routes, airports, merged):
     inspect_option = input("""What do you want to do?
     1\tInspect the variables of a used dataframe          
     2\tInspect unique values of a used dataframe
-    3\tShow biggest airports/airlines
+    3\tShow biggest airports/airlines/countries
     enter answer (1/2/3): """)
     
     if inspect_option == '1':
@@ -91,28 +99,34 @@ def inspect_data(routes, airports, merged):
         
         if extra_options == '1':
             print('\nThe 10 countries with most airports: \n')
+            
             # create plot pie of the 10 countries with the most airports
             merged['airport country'].value_counts()[0:10].plot.pie()
             plt.show()
             
         elif extra_options == '2':
             print('\nThe 10 biggest airports based on number of incoming flights: \n')
+            
             # use inspect_most_flights_airports function with merged file
             inspect_most_flights_airports(merged)
             
         elif extra_options == '3': 
             print('\nThe 10 biggest airports based on degree (most connected): \n')
+            
             # create table with top 10 airports with function in compare module
-            hub_table = comp.find_hubs_in_df(merged, 10)
+            hub_table = setair.find_hubs_in_df(merged, 10)
+            
             # then barplot this top 10 with labels
-            comp.barplot_from_df(hub_table, x="airport" , y="degree", ylabel="flight routes")
+            barplot_from_df(hub_table, x="airport" , y="degree", ylabel="flight routes")
             
         elif extra_options == '4':
             print('\nThe 10 biggest airlines: \n')
+            
             # create table with top 10 airlines with function in compare module
-            df_table_airlines = comp.airline_table_name(merged)[:10]
+            df_table_airlines = setair.airline_table_name(merged)[:10]
+            
             # use barplot function from compare module to make bar plot
-            comp.barplot_airlines(df_table_airlines)
+            barplot_from_df(df_table_airlines, x="name airline" , y="flight_routes_nr" , ylabel="flight routes")
         else:
             print('\nSorry, this is not an option, we will return to the main program')
     else:
