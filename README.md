@@ -7,13 +7,13 @@ The project is part of the course Computational Thinking at Universiteit Utrecht
 ### Prerequisites 
 There are several packages that we decided to implement in the program for various purposes. 
 They are: 
-matplotlib (https://matplotlib.org/) for plots and displaying data and statistics. 
-pandas (https://pandas.pydata.org/) for organizing and better handling the dataframe 
-numpy (https://www.numpy.org/)
-networkx (https://networkx.github.io/) for the creation and manipulations of graphs and networks starting from flights data
-basemap (https://matplotlib.org/basemap/users/installing.html) for visualization purposes 
-(We personally found it easier to install it through anaconda, typing: conda install -c anaconda basemap)
-operator (https://docs.python.org/3.0/library/operator.html) 
+matplotlib (https://matplotlib.org/) for plots and displaying data and statistics,
+pandas (https://pandas.pydata.org/) for organizing and better handling the dataframe, 
+numpy (https://www.numpy.org/),
+networkx (https://networkx.github.io/) for the creation and manipulations of graphs and networks starting from flights data,
+basemap (https://matplotlib.org/basemap/users/installing.html) for visualization purposes, 
+(We personally found it easier to install it through anaconda, typing: conda install -c anaconda basemap),
+operator (https://docs.python.org/3.0/library/operator.html). 
 
 ### GitHub link 
 Since this was a group project and we mainly worked in separate locations, we thought it would have been a good idea to implement the use of a version control like GitHub. With this easy tool we managed to mantain the code updated and available everywhere for everyone. 
@@ -32,8 +32,8 @@ Graphs can be used to model and study any structure of a network with connected 
 
 ### Research questions 
 At the beginning of the project we selected some questions that we would have liked to be answered by the end of the project. the main questions are represented here. 
-What are the most important/biggest airports in the world? Ranked based on their degree, not number of flights 
-What are the biggest airlines in the world? Based on number of flights
+What are the most important/biggest airports in the world? Ranked based on their degree, not number of flights. 
+What are the biggest airlines in the world? Based on number of flights.
 How do the networks of the airlines compare with each other based on graph metrics?
 
 ### Authors 
