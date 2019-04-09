@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Mar 16 15:09:24 2019
+### BASE_PREPROCESSING.PY
 
-@author: Kirsten
-"""
+### This is preprocessing module. In here you can find several functions:
 
-# module for preprocessing the data before analysis and visualisation
+### - Functions to read in the files and adjust their column names
+### - Functions to merge the three datasets into one dataframe
+
+#%% Necessary packages for this module
+
 import pandas as pd
 
 #%% Functions to load data files

@@ -1,20 +1,26 @@
-# MODULE FOR VISUALIZING FLIGHT NETWORK ON WORLD MAP
+### MODULE_VISUALIZATION_WORLDMAP.PY
+
+### This is the visualisation on worldmap module. In here you can find several functions:
+
+### - Functions for creating variables necessary for visualisation
+### - Functions necessary for other visualisation options
+### - Functions to create the visualisation on the worldmap
+### - Functions that include a program for the demo and the visualisation on worldmap
 
 
-#%%import necessary packages and tools
-import module_comparison as comp
+#%% Necessary packages for this module
 
 import networkx as nx
+import module_comparison as comp
+from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.basemap import Basemap 
-
 
 
 #%% Basic functions 
 
 # function to create graph object from dataframe using NetworkX
-def create_graph_object(df, directionality = nx.Graph()):
+def create_graph_object(df, directionality):
     graph = nx.from_pandas_edgelist(df, source = 'source airport', \
                                  target = 'destination airport', create_using = directionality)
     return graph   
@@ -33,8 +39,8 @@ def create_pos_variable(df, m):
     # now the parameters G (the graph) and pos (the positions) are set  
     return pos
 
-
-def draw_nodes_and_edges(graph, pos, node_size, ncolor='#F7A538', node_visibility = 0.8, ecolor='#5EC4B7', ewidth = 2, edge_visibility = 0.1):
+# function to draw the nodes and edges with specific parameters
+def draw_nodes_and_edges(graph, pos, node_size, node_visibility, edge_visibility, ncolor='#F7A538', ecolor='#5EC4B7', ewidth = 2):
     
     # draw the nodes of graph on the map and set other parameters for layout     
     nx.draw_networkx_nodes(graph, pos, node_size = node_size, node_color = ncolor, alpha = node_visibility)
@@ -62,11 +68,14 @@ def node_size_degree(graph):
 
 
 
-def draw_biggest_hubs(df, hub_nr, graph_df, pos, color, node_size):
+def draw_biggest_hubs(df, hub_nr, graph_df, pos, color):
     
     # create table with 
     hub_table = comp.find_hubs_in_df(df, hub_nr)
+    
     hublist = hub_table["airport"].tolist()
+    node_size = hub_table["degree"].tolist()
+    
     nx.draw_networkx_nodes(graph_df, pos, nodelist=hublist, node_color=color, node_size = node_size) 
     
     
@@ -94,7 +103,7 @@ def hub_network_labels(hub_table, graph, pos):
 
 #%% Function to draw network on the world map
 
-def visualize_on_worldmap(dataframe, directionality, node_size, hub_nr, node_visibility, edge_visibility):
+def visualize_on_worldmap(dataframe, directionality=nx.Graph(), node_size=20, hub_nr=0, node_visibility=0.8, edge_visibility=0.1):
      
     # create graph object from dataframe
     graph = create_graph_object(dataframe, directionality)
@@ -128,11 +137,11 @@ def visualize_on_worldmap(dataframe, directionality, node_size, hub_nr, node_vis
     pos = create_pos_variable(dataframe, m)   
     
     # draw the nodes and edges on the map and set other parameters for layout
-    draw_nodes_and_edges(graph, pos, node_size)
+    draw_nodes_and_edges(graph, pos, node_size, node_visibility, edge_visibility)
     
     # if hub_nr is more than 0, draw biggest hubs
     if hub_nr > 0:
-        draw_biggest_hubs(dataframe, hub_nr, graph, pos, '#CC0000', node_size)
+        draw_biggest_hubs(dataframe, hub_nr, graph, pos, '#CC0000')
         
         # find biggest hubs and draw hub labels
         hub_table = comp.find_hubs_in_df(dataframe, hub_nr)
@@ -151,9 +160,9 @@ def visualize_on_worldmap(dataframe, directionality, node_size, hub_nr, node_vis
 def visualize_two_networks_on_worldmap(df1, df2):
         
     # create graph object from dataframe for both airlines
-    graph_df1 = create_graph_object(df1, directionality = nx.Graph())
+    graph_df1 = create_graph_object(df1, nx.Graph())
 
-    graph_df2 = create_graph_object(df2, directionality = nx.Graph())
+    graph_df2 = create_graph_object(df2, nx.Graph())
 
     # draw mercator projection as background and set size
     plt.figure(figsize = (15,20))
@@ -186,14 +195,13 @@ def visualize_two_networks_on_worldmap(df1, df2):
     node_size2 = node_size_degree(graph_df2)
     
     # draw the nodes and edges of the airlines on the map and set other parameters for layout 
-    draw_nodes_and_edges(graph = graph_df1, pos = pos1, node_size = node_size1, ncolor = "#FF6347", ecolor = '#FFBABA', edge_visibility = 0.5)
-    draw_nodes_and_edges(graph = graph_df2, pos = pos2, node_size = node_size2, ncolor = '#20B2AA', ecolor = '#AFEEEE', edge_visibility = 0.5)                     
+    draw_nodes_and_edges(graph_df1, pos1, node_size1, node_visibility = 0.8, edge_visibility = 0.5, ncolor = "#FF6347", ecolor = '#FFBABA')
+    draw_nodes_and_edges(graph_df2, pos2, node_size2, node_visibility = 0.8, edge_visibility = 0.5, ncolor = '#20B2AA', ecolor = '#AFEEEE')                     
                  
     # draw biggest hubs of airlines
-    draw_biggest_hubs(df1, 1, graph_df1, pos1, '#CC0000', node_size1)
-    draw_biggest_hubs(df2, 1, graph_df2, pos2, '#CC0000', node_size2)
+    draw_biggest_hubs(df1, 1, graph_df1, pos1, '#CC0000')
+    draw_biggest_hubs(df2, 1, graph_df2, pos2, '#0000CC')
     
-
     # find biggest hub of airline and draw labels on the graph
     hub1 = comp.find_hubs_in_df(df1, 1)
     hub_network_labels(hub1, graph_df1, pos1)
@@ -205,57 +213,15 @@ def visualize_two_networks_on_worldmap(df1, df2):
     # plt.figure(figsize = (130,120))
     plt.show()    
    
-    
-    
-    
-    
-    
-#%% keep to be sure
-
-def visualize_on_worldmap2(dataframe, directionality, node_size, node_visibility, edge_visibility):
-     
-    # create graph object from dataframe
-    graph = create_graph_object(dataframe, directionality = directionality)
-    
-    # print graph info
-    graph_info = nx.info(graph)
-    print(graph_info)
-
-    # draw mercator projection as background and set size
-    plt.figure(figsize = (15,20))
-    m = Basemap(projection='merc',
-                llcrnrlon=-180,
-                llcrnrlat=-80,
-                urcrnrlon=180,
-                urcrnrlat=80,
-                # lat_ts=20,
-                # resolution='l',
-                # suppress_ticks=True
-               )
-    
-    # include coastlines, countries and boundaries
-    m.drawcoastlines()
-    m.drawmapboundary()
-    m.drawcountries()
-
-    # include longitude and latitude lines if you want
-    m.drawparallels(np.arange(-90,90,30))
-    m.drawmeridians(np.arange(-180,180,60))
-
-    # create variable pos, that contains the position of each node
-    pos = create_pos_variable(dataframe, m)   
-    
-    # draw the nodes and edges on the map and set other parameters for layout
-    draw_nodes_and_edges(graph, pos, node_size = node_size, node_visibility = node_visibility, edge_visibility = edge_visibility)
-    
-    # show plot
-    # plt.tight_layout()
-    # plt.figure(figsize = (130,120))
-    plt.show()    
 
 #%% Program for the demo
     
-def demo_program(dataframe, directionality, node_size, hubs_nr, node_visibility, edge_visibility):
+def demo_program(dataframe):
+    
+    #demo_program(dataframe, directionality, node_size, hubs_nr, node_visibility, edge_visibility):
+    
+    #demo settings
+    #directionality = nx.Graph()
     
     demo_options = input("""What do you want to do?
     1\tShow both airports and flight routes             
@@ -264,24 +230,39 @@ def demo_program(dataframe, directionality, node_size, hubs_nr, node_visibility,
     enter answer (1/2/3): """)
     if demo_options == '1':
         print('You chose to show both airports and flight routes')
+        visualize_on_worldmap(dataframe)
+    
     elif demo_options == '2':
         print('You chose to show only the airports')
-        edge_visibility = 0
+        #edge_visibility = 0
+        visualize_on_worldmap(dataframe, edge_visibility = 0)
+        
     elif demo_options == '3':
         print('You chose to show only the flight routes')
-        node_visibility = 0
+        visualize_on_worldmap(dataframe, node_visibility = 0)
+        #node_visibility = 0
     else:
         print('Sorry, this is not an option, we will use the default settubg: all airlines and airports')
         
     # visualize demo flight network 
     # worldmap.visualize_on_worldmap(dataframe, directionality)
 
-    visualize_on_worldmap(dataframe, directionality, node_size, hubs_nr, node_visibility, edge_visibility)
+    #visualize_on_worldmap(dataframe, directionality, node_size, hubs_nr, node_visibility, edge_visibility)
     
 #%% Program for the visualisation with self-chosen parameters
 
-def visualisation_worldmap_program(dataframe, directionality, node_size, hubs_nr, node_visibility, edge_visibility):
+def visualisation_worldmap_program(dataframe):
 
+    #visualisation_worldmap_program(dataframe, directionality, node_size, hubs_nr, node_visibility, edge_visibility):
+
+    # default settings
+    dataframe = dataframe
+    directionality = nx.Graph()
+    node_size = 20
+    hub_nr = 0
+    #node_visibility = 0.8
+    #edge_visibility = 0.1
+    
     # 1st parameters: amount of airlines and airports
     map_amount = input("""What do you want to do?
     1\tSelect all airlines and airports              
@@ -292,7 +273,6 @@ def visualisation_worldmap_program(dataframe, directionality, node_size, hubs_nr
     if map_amount == '1':
         print('You chose to plot all airlines and airports')
           
-    
     elif map_amount == '2':
         print('You chose to plot specific airlines')
         choice_airlines = input("""What do you want to do?
@@ -302,9 +282,9 @@ def visualisation_worldmap_program(dataframe, directionality, node_size, hubs_nr
         
         if choice_airlines == '1':
             print('You chose to plot the biggest airlines')
-            map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
+            map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 15) '))
             
-            if 1 <= map_number_airlines <= 50:
+            if 1 <= map_number_airlines <= 15:
                 print(f'You chose to plot the top {map_number_airlines} biggest airlines')
                 
                 
@@ -316,6 +296,7 @@ def visualisation_worldmap_program(dataframe, directionality, node_size, hubs_nr
                 
                 # dataframe with the flights of the desired n.of airlines 
                 dataframe = comp.take_nairlines(dataframe, airline_table, map_number_airlines)
+
 
                 # take top n rows of table specifief by number
                 top_table = airline_table_name[:map_number_airlines]
@@ -347,8 +328,8 @@ def visualisation_worldmap_program(dataframe, directionality, node_size, hubs_nr
         
         if choice_airports == '1':
             print('You chose to plot the biggest airports')
-            map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
-            if 1 <= map_number_airports <= 50:
+            map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 15) '))
+            if 1 <= map_number_airports <= 15:
                 
                 hub_nr = map_number_airports
                 print(f'You chose to plot the top {hub_nr} biggest airports')
@@ -407,7 +388,7 @@ def visualisation_worldmap_program(dataframe, directionality, node_size, hubs_nr
         print('You chose to display airport size dependent on degree')
         
         # create graph object from dataframe defined as 1st parameter
-        graph = create_graph_object(dataframe)
+        graph = create_graph_object(dataframe, nx.Graph())
         
         # ADJUST! now degree of node changes dependent on subnetwork.
         # degree should be static, based on whole network!
@@ -419,5 +400,8 @@ def visualisation_worldmap_program(dataframe, directionality, node_size, hubs_nr
     
     
     # VISUALIZE FLIGHT NETWORK WITH USER OPTIONS
-    visualize_on_worldmap(dataframe, directionality, node_size, hub_nr, node_visibility, edge_visibility)
+    visualize_on_worldmap(dataframe, directionality, node_size, hub_nr)
+    
     #worldmap.visualize_on_worldmap2(dataframe, directionality, node_size, node_visibility, edge_visibility)
+    
+    
