@@ -145,7 +145,6 @@ while True:
         # start this program in the compare airlines and use df_merged as default
         comp_air.compare_airlines(df_merged)
 
-        
     elif choice == "4": # Exit program 
         print("Thank you for using this program.")
         break 

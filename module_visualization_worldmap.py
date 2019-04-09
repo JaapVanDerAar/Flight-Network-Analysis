@@ -242,7 +242,7 @@ def demo_program(dataframe):
         visualize_on_worldmap(dataframe, node_visibility = 0)
         #node_visibility = 0
     else:
-        print('Sorry, this is not an option, we will use the default settubg: all airlines and airports')
+        print('\nSorry, this is not an option, we will return to the main program')
         
     # visualize demo flight network 
     # worldmap.visualize_on_worldmap(dataframe, directionality)
@@ -309,14 +309,17 @@ def visualisation_worldmap_program(dataframe):
                 
 
             else:
-                print('Sorry, this is not an option, we will use the default setting') 
+                print('\nSorry, this is not an option, we will use the default setting: all airports and airlines') 
+
                 
         elif choice_airlines == '2':   
             print('You chose to plot a specific airline based on name')
             
             # create a dataframe with only the in- and outcoming flights of the selected airport through user
             dataframe = comp.define_airline_through_user_input(dataframe)
-            
+          
+        else:
+            print('\nSorry, this is not an option, we will use the default setting: all airports and airlines') 
         
         
     elif map_amount == '3':
@@ -343,7 +346,7 @@ def visualisation_worldmap_program(dataframe):
                 # show barplot of amount of flight routes (edges) per hub airport
                 comp.barplot_from_df(hub_table, x="airport" , y="degree", ylabel="flight routes")
             else:
-                print('Sorry, this is not an option, we will use the default setting') 
+                print('\nSorry, this is not an option, we will use the default setting: all airports and airlines') 
                 
         elif choice_airports == '2':
             print('You chose to plot a specific airport based on name')
@@ -355,7 +358,8 @@ def visualisation_worldmap_program(dataframe):
             dataframe = comp.define_airport_through_user_input(dataframe)
 
     else:
-        print('Sorry, this is not an option, we will use the default setting')                  
+        print('\nSorry, this is not an option, we will use the default setting: all airports and airlines') 
+
 
 
     # 2nd parameter: directed or undirected network
@@ -372,7 +376,7 @@ def visualisation_worldmap_program(dataframe):
         directionality = nx.DiGraph()
         
     else:
-        print('Sorry, this is not an option, we will use the default setting')   
+        print('\nSorry, this is not an option, we will use the default setting: an undirected network')   
     
 
     # 3rd parameter: size of the airports
@@ -396,7 +400,7 @@ def visualisation_worldmap_program(dataframe):
         node_size = node_size_degree(graph)
         
     else:
-        print('Sorry, this is not an option, we will use the default setting')
+        print('\nSorry, this is not an option, we will use the default setting: all same size ')
     
     
     # VISUALIZE FLIGHT NETWORK WITH USER OPTIONS

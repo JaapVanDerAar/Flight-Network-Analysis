@@ -59,7 +59,7 @@ def inspect_data(routes, airports, merged):
             inspect_columns(merged)
             
         else:
-            print('Sorry, this is not an option, we will use the default setting') 
+            print('\nSorry, this is not an option, we will return to the main program') 
             
     elif inspect_option == '2':
         unique_dataframe = input("""Which dataframe?
@@ -79,7 +79,7 @@ def inspect_data(routes, airports, merged):
             inspect_unique_values(merged)
             
         else:
-            print('Sorry, this is not an option, we will use the default setting') 
+            print('\nSorry, this is not an option, we will return to the main program') 
             
     elif inspect_option == '3':
         extra_options = input("""What would you want to do?
@@ -114,9 +114,9 @@ def inspect_data(routes, airports, merged):
             # use barplot function from compare module to make bar plot
             comp.barplot_airlines(df_table_airlines)
         else:
-            print('Sorry, this is not an option, we will use the default setting')
+            print('\nSorry, this is not an option, we will return to the main program')
     else:
-        print('Sorry, this is not an option, we will use the default setting')
+        print('\nSorry, this is not an option, we will return to the main program')
         
         
         
