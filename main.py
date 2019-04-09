@@ -1,5 +1,6 @@
 
 
+
 # MAIN PROGRAM
 # handling the interaction with the user
 # 
@@ -13,6 +14,8 @@
 
 
 #%% Import modules and packages
+
+### MAYBE SOME ERROR HANDLING HERE!!! + remove unnecessary modules
 
 # self-defined modules
 import base_preprocessing as bpp
@@ -98,39 +101,29 @@ while True:
     4\tExit program.
     enter answer (0/1/2/3/4): """)
     
-    # set default variables for the visualisation
-    dataframe = df_merged
-    directionality = nx.Graph()
-    node_size = 20
-    hub_nr = 0
-    node_visibility = 0.8
-    edge_visibility = 0.1
-    
     # evaluate user choice and proceed accordingly
     if choice == "0": # see demo
         
         # start this program in the worldmap module with default settings
-        worldmap.demo_program(dataframe, directionality, node_size, hub_nr, node_visibility, edge_visibility)
+        worldmap.demo_program(df_merged)
 
-    
 
     elif choice == "1": # Inspect data
 
         # start this program in the inspect module with the dataframes to inspect
         inspect.inspect_data(df_routes, df_airports, df_merged)
     
+    
     elif choice == "2": # Visualize flight network
         
         # start this program in the worldmap module with default settings
-        worldmap.visualisation_worldmap_program(dataframe, directionality, node_size, hub_nr, node_visibility, edge_visibility)
+        worldmap.visualisation_worldmap_program(df_merged)
 
-     
             
     elif choice == "3": # Compare airlines
         
         comp_air.compare_airlines(df_merged)
 
-                
         
     elif choice == "4": # Exit program 
         print("Thank you for using this program.")
@@ -140,10 +133,3 @@ while True:
         print("Choice not recognized. Try again.")
         
         
-        
-      
-    
-
-        
-      
-    
