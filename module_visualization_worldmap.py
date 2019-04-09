@@ -282,9 +282,9 @@ def visualisation_worldmap_program(dataframe):
         
         if choice_airlines == '1':
             print('You chose to plot the biggest airlines')
-            map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
+            map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 15) '))
             
-            if 1 <= map_number_airlines <= 50:
+            if 1 <= map_number_airlines <= 15:
                 print(f'You chose to plot the top {map_number_airlines} biggest airlines')
                 
                 
@@ -328,8 +328,8 @@ def visualisation_worldmap_program(dataframe):
         
         if choice_airports == '1':
             print('You chose to plot the biggest airports')
-            map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
-            if 1 <= map_number_airports <= 50:
+            map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 15) '))
+            if 1 <= map_number_airports <= 15:
                 
                 hub_nr = map_number_airports
                 print(f'You chose to plot the top {hub_nr} biggest airports')
