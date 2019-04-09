@@ -1,16 +1,20 @@
+### MODULE_VISUALIZATION_WORLDMAP.PY
+
+### This is the visualisation on worldmap module. In here you can find several functions:
+
+### - Functions for creating variables necessary for visualisation
+### - Functions necessary for other visualisation options
+### - Functions to create the visualisation on the worldmap
+### - Functions that include a program for the demo and the visualisation on worldmap
 
 
-# MODULE FOR VISUALIZING FLIGHT NETWORK ON WORLD MAP
-
-
-#%%import necessary packages and tools
-import module_comparison as comp
+#%% Necessary packages for this module
 
 import networkx as nx
+import module_comparison as comp
+from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.basemap import Basemap 
-
 
 
 #%% Basic functions 
@@ -35,7 +39,7 @@ def create_pos_variable(df, m):
     # now the parameters G (the graph) and pos (the positions) are set  
     return pos
 
-
+# function to draw the nodes and edges with specific parameters
 def draw_nodes_and_edges(graph, pos, node_size, node_visibility, edge_visibility, ncolor='#F7A538', ecolor='#5EC4B7', ewidth = 2):
     
     # draw the nodes of graph on the map and set other parameters for layout     

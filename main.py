@@ -1,21 +1,53 @@
+### Welcome to the code of our project: The World's Flight Network
 
+### This is our main.py, which does the following:
+### - Importing necessary packages and self-defined modules
+### - Loading in the necessary datasets
+### - Calling functions of the preprocessing module to adjust and merge data
+### - Starting the main program and calling other modules
+###
+### - More information on the project including graph theory, downloading packages 
+###   and the datasets can be found in the README-file: 
 
+###   https://github.com/JaapVanDerAar/Flight-Network-Analysis/
 
-# MAIN PROGRAM
-# handling the interaction with the user
-# 
-#
+### In the program there are several options you can choose from:
+### 0) Demos: These will give a quick view on the world's  flight network,  
+###    or only the flights or airports
+### 1) Inspect the used dataframes: See their columns, unique values, or look 
+###    at the biggest airports, airlines and represented countries
+### 2) Visualise with self-choosen parameters: Here you have the option to set 
+###    different parameters. Do you want to select a certain amount of airlines
+###    or airports, do you want a specific airport or airline, do you want 
+###    a directed or undirected network, and/or do you want to adjust the 
+###    their size according to their degree?
+### 3) Compare airlines: In this option it is possible to select two airlines,
+###    plot those on the worldmap and get their graph theory metrics
+### 4) Exit program
 
+### An extensive flowchart of the program can be found on in the Github repository
 
-# - Check consistency, does it print 'you chose ..' everywhere, and is there a default variable when the right option is not chosen?
-# - Put demo + programm option 2 into module
-# - Adding comments
-# - Write some code shorter
+### This program will answer the following research questions:
+### 1) What is the biggest (most connected) airport on earth?
+### 2) What is the biggest (most flightes) airline?
+### 3) How do airlines differ from each other based on graph metrics?
 
+#%% Import all necessary packages and modules
+### Some are not necessary for this main, but are necessary for other modules
 
-#%% Import modules and packages
+### MAYBE SOME ERROR HANDLING HERE!!! 
 
-### MAYBE SOME ERROR HANDLING HERE!!! + remove unnecessary modules
+# import other packages in standard Anaconda library
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+import numpy as np
+import operator
+
+# import from outside
+# https://matplotlib.org/basemap/users/installing.html
+# or conda install -c anaconda basemap
+from mpl_toolkits.basemap import Basemap
 
 # self-defined modules
 import base_preprocessing as bpp
@@ -23,18 +55,6 @@ import module_visualization_worldmap as worldmap
 import module_comparison as comp
 import module_inspect_data as inspect
 import module_comparison_airlines as comp_air
-
-# other modules
-import networkx as nx
-
-# list of other packages to install:
-# matplotlib
-# pandas
-# numpy
-# networkx
-# basemap
-# operator
-
 
 #%% Load data
 
@@ -122,6 +142,7 @@ while True:
             
     elif choice == "3": # Compare airlines
         
+        # start this program in the compare airlines and use df_merged as default
         comp_air.compare_airlines(df_merged)
 
         

@@ -1,15 +1,18 @@
-#%% MODULE COMPARISON
+### MODULE_COMPARISON.PY
 
+### This is the comparison module. In here you can find several functions:
 
-#%% Import neccessary packages
+### - A Functions to calculate the degree of the airports
+### - Functions to select the right dataframes for input
+### - Functions to define the user input
 
-import base_preprocessing as bpp
+#%% Necessary packages for this module
 
 import networkx as nx
-import matplotlib.pyplot as plt
-import pandas as pd
 import operator
-
+import pandas as pd
+import base_preprocessing as bpp
+import matplotlib.pyplot as plt
 
 #%%% Basic Functions
 
