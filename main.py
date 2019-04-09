@@ -1,3 +1,4 @@
+
 ### Welcome to the code of our project: The World's Flight Network
 
 ### This is our main.py, which does the following:
@@ -16,7 +17,7 @@
 ###    or only the flights or airports
 ### 1) Inspect the used dataframes: See their columns, unique values, or look 
 ###    at the biggest airports, airlines and represented countries
-### 2) Visualise with self-choosen parameters: Here you have the option to set 
+### 2) Visualize with self-choosen parameters: Here you have the option to set 
 ###    different parameters. Do you want to select a certain amount of airlines
 ###    or airports, do you want a specific airport or airline, do you want 
 ###    a directed or undirected network, and/or do you want to adjust the 
@@ -32,34 +33,46 @@
 ### 2) What is the biggest (most flightes) airline?
 ### 3) How do airlines differ from each other based on graph metrics?
 
-#%% Import all necessary packages and modules
-### Some are not necessary for this main, but are necessary for other modules
 
-### MAYBE SOME ERROR HANDLING HERE!!! 
+### Overview of packages modules used in this program:
 
-# import other packages in standard Anaconda library
-import pandas as pd
-import networkx as nx
-import matplotlib.pyplot as plt
-import numpy as np
-import operator
+### From the standard Anaconda library:
+### pandas
+### networkx
+### matplotlib.pyplot
+### numpy
+### operator
 
-# import from outside
-# https://matplotlib.org/basemap/users/installing.html
-# or conda install -c anaconda basemap
-from mpl_toolkits.basemap import Basemap
+### From outside the standard library:
+### https://matplotlib.org/basemap/users/installing.html
+### or conda install -c anaconda basemap
+### mpl_toolkits.basemap (Basemap)
+
+### Self-defined modules:
+### base_preprocessing
+### module_visualization_worldmap
+### module_settings_airlines_airports
+### module_inspect_data
+### module_comparison_airlines
+
+
+#%% Import all necessary modules and packages
 
 # self-defined modules
-import base_preprocessing as bpp
-import module_visualization_worldmap as worldmap
-import module_comparison as comp
-import module_inspect_data as inspect
-import module_comparison_airlines as comp_air
+try:
+    import base_preprocessing as bpp
+    import module_visualization_worldmap as worldmap
+    import module_inspect_data as inspect
+    import module_comparison_airlines as comp_air
+except Exception as err: 
+    print("Something went wrong with one of the modules")
+    print(err)
 
 #%% Load data
 
-# define filenames which you want to load
-# in this case a csv with all flight routes and a csv with geographical locations of airports
+# define filenames of datasets that you want to load
+# in this case a csv with all flight routes, a csv with geographical locations of airports,
+# and a txt file (in csv format) with airline information
 filename_routes = "routes.csv"
 filename_airports = "airports-extended.csv"
 filename_airlines = "airlines.txt"
@@ -93,8 +106,6 @@ except Exception as err:
     
     
 #%% Preprocessing: merging and cleaning of dataframes
-    
-### MAYBE PUT ALL IN PREPROCESSING WITH METAFUNCTION
 
 # left outer join of routes and airlines dataframes
 df_merge_airlines_info = bpp.left_merge_dataframes(df_routes, df_airlines, "airline ID")
@@ -124,7 +135,7 @@ while True:
     # evaluate user choice and proceed accordingly
     if choice == "0": # see demo
         
-        # start this program in the worldmap module with default settings
+        # start this program in the worldmap module with the merged dataframe as input
         worldmap.demo_program(df_merged)
 
 
@@ -136,14 +147,14 @@ while True:
     
     elif choice == "2": # Visualize flight network
         
-        # start this program in the worldmap module with default settings
+        # start this program in the worldmap module with the merged dataframe as input
         worldmap.visualisation_worldmap_program(df_merged)
 
             
     elif choice == "3": # Compare airlines
         
-        # start this program in the compare airlines and use df_merged as default
-        comp_air.compare_airlines(df_merged)
+        # start this program in the compare airlines module with the merged dataframe as input
+        comp_air.compare_airlines_program(df_merged)
 
     elif choice == "4": # Exit program 
         print("Thank you for using this program.")
