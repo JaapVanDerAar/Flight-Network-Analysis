@@ -3,13 +3,10 @@
 
 # import necessary packages
 import module_comparison as comp
+import module_visualization_worldmap as worldmap
 
 import networkx as nx
 import pandas as pd
-import matplotlib.pyplot as plt
-import numpy as np
-from mpl_toolkits.basemap import Basemap 
-
 
 
 
@@ -24,7 +21,7 @@ def calculate_network_metrics_from_df(df):
     nnodes = graph_airline.number_of_nodes()
     nedges = graph_airline.number_of_edges()
     
-     # calculate density of the network
+    # calculate density of the network
     density_airline = nx.density(graph_airline)
     
     # calculate average shortest path
@@ -54,6 +51,21 @@ def create_graph_metrics_table(df1, df2):
     
 
 
+#%% Metafunction
+
+def compare_airlines(df):
     
-
-
+    print("\nYou chose to compare airlines.")
+    
+    # let user specify airlines to visualize and create dataframes for both 
+    df_airline1 = comp.define_airline_through_user_input(df)
+    
+    print("\n\tYou choose your first airline. Now select another one to compare!")
+    
+    df_airline2 = comp.define_airline_through_user_input(df)
+    
+    # visualize airline networks on worldmap
+    worldmap.visualize_two_networks_on_worldmap(df_airline1, df_airline2)  
+    
+    # print network metrics table
+    create_graph_metrics_table(df_airline1, df_airline2)

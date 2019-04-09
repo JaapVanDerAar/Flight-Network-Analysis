@@ -102,8 +102,9 @@ while True:
     dataframe = df_merged
     directionality = nx.Graph()
     node_size = 20
-    node_visibility = 0.8
-    edge_visibility = 0.1
+    hub_nr = 0
+    #node_visibility = 0.8
+    #edge_visibility = 0.1
     
     # evaluate user choice and proceed accordingly
     if choice == "0": # see demo
@@ -122,12 +123,10 @@ while True:
             print('You chose to show only the flight routes')
             node_visibility = 0
         else:
-            print('Sorry, this is not an option, we will use the default settubg: all airlines and airports')
+            print('Sorry, this is not an option, we will use the default setting: all airlines and airports')
             
         # visualize demo flight network 
-        # worldmap.visualize_on_worldmap(dataframe, directionality)
-    
-        worldmap.visualize_on_worldmap(dataframe, directionality, node_size, node_visibility, edge_visibility)
+        worldmap.visualize_on_worldmap(dataframe, directionality, node_size, hub_nr)
     
 
     elif choice == "1": # Inspect data
@@ -160,22 +159,25 @@ while True:
                 
                 if 1 <= map_number_airlines <= 50:
                     print(f'You chose to plot the top {map_number_airlines} biggest airlines')
-
-                    #create a table with the top airlines with n. of flights
-                    airline_table_name = comp.airline_table_name(df_merged)
+                    
+                    
+                    # create a table with the top airlines with n. of flights (with IATA code)
                     airline_table = comp.airline_table(df_merged)
-                    #dataframe with the flights of the desired n.of airlines 
+                    
+                    # create a table with the top airlines with n. of flights (full airline names)
+                    airline_table_name = comp.airline_table_name(df_merged)
+                    
+                    # dataframe with the flights of the desired n.of airlines 
                     dataframe = comp.take_nairlines(df_merged, airline_table, map_number_airlines)
 
                     # take top n rows of table specifief by number
                     top_table = airline_table_name[:map_number_airlines]
+                    
                     # show barplot of amount of flight routes (edges) per hub airport
                     comp.barplot_airlines(top_table)
-
-
                     
                     # show barplot of amount of flight routes per airline
-                    #comp.barplot_from_df(top_table, x="airline IATA code" , y="flight_routes_nr" , ylabel="flight routes")
+                    # comp.barplot_from_df(top_table, x="airline IATA code" , y="flight_routes_nr" , ylabel="flight routes")
                     
 
                 else:
@@ -200,11 +202,12 @@ while True:
                 print('You chose to plot the biggest airports')
                 map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
                 if 1 <= map_number_airports <= 50:
-                    hubs_nr = map_number_airports
-                    print(f'You chose to plot the top {hubs_nr} biggest airports')
+                    
+                    hub_nr = map_number_airports
+                    print(f'You chose to plot the top {hub_nr} biggest airports')
                 
                     # determine what are the top 'n' most connected airports (hubs)
-                    hub_table = comp.find_hubs_in_df(df_merged, hubs_nr)
+                    hub_table = comp.find_hubs_in_df(df_merged, hub_nr)
                 
                     # create a dataframe with only the in- and outcoming flights from hub airports
                     dataframe = comp.hub_network_df(df_merged, hub_table)
@@ -216,6 +219,9 @@ while True:
                     
             elif choice_airports == '2':
                 print('You chose to plot a specific airport based on name')
+                
+                # define number of hubs to visualise
+                hub_nr = 1
                 
                 # create a dataframe with only the in- and outcoming flights of the selected airport through user
                 dataframe = comp.define_airport_through_user_input(df_merged)
@@ -266,24 +272,14 @@ while True:
         
         
         # VISUALIZE FLIGHT NETWORK WITH USER OPTIONS
-        worldmap.visualize_on_worldmap(dataframe, directionality, node_size, node_visibility, edge_visibility)
+        worldmap.visualize_on_worldmap(dataframe, directionality, node_size, hub_nr)
+        #worldmap.visualize_on_worldmap2(dataframe, directionality, node_size, node_visibility, edge_visibility)
      
             
-    elif choice == "3": # THIS IS FOR THE COMPARISON
-        print("You chose to compare airlines")
+    elif choice == "3": # Compare airlines
         
-        # let user specify airlines to visualize and create dataframes for both 
-        df_airline1 = comp.define_airline_through_user_input(df_merged)
-        print("\nYou choose your first airline. Now select another one to compare!")
-        
-        df_airline2 = comp.define_airline_through_user_input(df_merged)
-        
+        comp_air.compare_airlines(df_merged)
 
-        # visualize airline networks on worldmap
-        worldmap.visualize_two_networks_on_worldmap(df_airline1, df_airline2)  
-        
-        # print network metrics table
-        comp_air.create_graph_metrics_table(df_airline1, df_airline2)
                 
         
     elif choice == "4": # Exit program 
