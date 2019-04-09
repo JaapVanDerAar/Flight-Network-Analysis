@@ -103,177 +103,27 @@ while True:
     directionality = nx.Graph()
     node_size = 20
     hub_nr = 0
-    #node_visibility = 0.8
-    #edge_visibility = 0.1
+    node_visibility = 0.8
+    edge_visibility = 0.1
     
     # evaluate user choice and proceed accordingly
     if choice == "0": # see demo
         
-        demo_options = input("""What do you want to do?
-        1\tShow both airports and flight routes             
-        2\tShow only airports
-        3\tShow only flight routes
-        enter answer (1/2/3): """)
-        if demo_options == '1':
-            print('You chose to show both airports and flight routes')
-        elif demo_options == '2':
-            print('You chose to show only the airports')
-            edge_visibility = 0
-        elif demo_options == '3':
-            print('You chose to show only the flight routes')
-            node_visibility = 0
-        else:
-            print('Sorry, this is not an option, we will use the default setting: all airlines and airports')
-            
-        # visualize demo flight network 
-        worldmap.visualize_on_worldmap(dataframe, directionality, node_size, hub_nr)
+        # start this program in the worldmap module with default settings
+        worldmap.demo_program(dataframe, directionality, node_size, hub_nr, node_visibility, edge_visibility)
+
     
 
     elif choice == "1": # Inspect data
 
+        # start this program in the inspect module with the dataframes to inspect
         inspect.inspect_data(df_routes, df_airports, df_merged)
     
     elif choice == "2": # Visualize flight network
         
-        # 1st parameters: amount of airlines and airports
-        map_amount = input("""What do you want to do?
-        1\tSelect all airlines and airports              
-        2\tSelect specific airlines
-        3\tSelect specific airports
-        enter answer (1/2/3): """)
-        
-        if map_amount == '1':
-            print('You chose to plot all airlines and airports')
-              
-        
-        elif map_amount == '2':
-            print('You chose to plot specific airlines')
-            choice_airlines = input("""What do you want to do?
-            1\tSelect the biggest airlines             
-            2\tSelect a specific airline
-            enter answer (1/2): """)
-            
-            if choice_airlines == '1':
-                print('You chose to plot the biggest airlines')
-                map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
-                
-                if 1 <= map_number_airlines <= 50:
-                    print(f'You chose to plot the top {map_number_airlines} biggest airlines')
-                    
-                    
-                    # create a table with the top airlines with n. of flights (with IATA code)
-                    airline_table = comp.airline_table(df_merged)
-                    
-                    # create a table with the top airlines with n. of flights (full airline names)
-                    airline_table_name = comp.airline_table_name(df_merged)
-                    
-                    # dataframe with the flights of the desired n.of airlines 
-                    dataframe = comp.take_nairlines(df_merged, airline_table, map_number_airlines)
+        # start this program in the worldmap module with default settings
+        worldmap.visualisation_worldmap_program(dataframe, directionality, node_size, hub_nr, node_visibility, edge_visibility)
 
-                    # take top n rows of table specifief by number
-                    top_table = airline_table_name[:map_number_airlines]
-                    
-                    # show barplot of amount of flight routes (edges) per hub airport
-                    comp.barplot_airlines(top_table)
-                    
-                    # show barplot of amount of flight routes per airline
-                    # comp.barplot_from_df(top_table, x="airline IATA code" , y="flight_routes_nr" , ylabel="flight routes")
-                    
-
-                else:
-                    print('Sorry, this is not an option, we will use the default setting') 
-                    
-            elif choice_airlines == '2':   
-                print('You chose to plot a specific airline based on name')
-                
-                # create a dataframe with only the in- and outcoming flights of the selected airport through user
-                dataframe = comp.define_airline_through_user_input(df_merged)
-                
-            
-            
-        elif map_amount == '3':
-            print('You chose to plot specific airports')
-            choice_airports = input("""What do you want to do?
-            1\tSelect the biggest airports             
-            2\tSelect a specific airports
-            enter answer (1/2): """)  
-            
-            if choice_airports == '1':
-                print('You chose to plot the biggest airports')
-                map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
-                if 1 <= map_number_airports <= 50:
-                    
-                    hub_nr = map_number_airports
-                    print(f'You chose to plot the top {hub_nr} biggest airports')
-                
-                    # determine what are the top 'n' most connected airports (hubs)
-                    hub_table = comp.find_hubs_in_df(df_merged, hub_nr)
-                
-                    # create a dataframe with only the in- and outcoming flights from hub airports
-                    dataframe = comp.hub_network_df(df_merged, hub_table)
-                
-                    # show barplot of amount of flight routes (edges) per hub airport
-                    comp.barplot_from_df(hub_table, x="airport" , y="degree", ylabel="flight routes")
-                else:
-                    print('Sorry, this is not an option, we will use the default setting') 
-                    
-            elif choice_airports == '2':
-                print('You chose to plot a specific airport based on name')
-                
-                # define number of hubs to visualise
-                hub_nr = 1
-                
-                # create a dataframe with only the in- and outcoming flights of the selected airport through user
-                dataframe = comp.define_airport_through_user_input(df_merged)
-
-        else:
-            print('Sorry, this is not an option, we will use the default setting')                  
-    
-    
-        # 2nd parameter: directed or undirected network
-        map_edges = input("""What do you want to do?
-        1\tMake an undirected network              
-        2\tMake a directed network
-        enter answer (1/2): """)
-        
-        if map_edges == '1':
-            print(f'You chose to create an undirected network')
-            
-        elif map_edges == '2':
-            print(f'You chose to create a directed network')
-            directionality = nx.DiGraph()
-            
-        else:
-            print('Sorry, this is not an option, we will use the default setting')   
-        
-
-        # 3rd parameter: size of the airports
-        size_airport = input("""What do you want to do?
-        1\tDisplay all airports with the same size             
-        2\tDisplay size of airport depending on how many flight routes it has (degree)
-        enter answer (1/2): """)
-        
-        if size_airport == '1':
-            print('You chose to display all airports with the same size')
-            
-        elif size_airport == '2':
-            print('You chose to display airport size dependent on degree')
-            
-            # create graph object from dataframe defined as 1st parameter
-            graph = worldmap.create_graph_object(dataframe)
-            
-            # ADJUST! now degree of node changes dependent on subnetwork.
-            # degree should be static, based on whole network!
-            # use graph object to calculate degree per node and write to list
-            node_size = worldmap.node_size_degree(graph)
-            
-        else:
-            print('Sorry, this is not an option, we will use the default setting')
-        
-        
-        # VISUALIZE FLIGHT NETWORK WITH USER OPTIONS
-        worldmap.visualize_on_worldmap(dataframe, directionality, node_size, hub_nr)
-        #worldmap.visualize_on_worldmap2(dataframe, directionality, node_size, node_visibility, edge_visibility)
      
             
     elif choice == "3": # Compare airlines
@@ -290,6 +140,10 @@ while True:
         print("Choice not recognized. Try again.")
         
         
+        
+      
+    
+
         
       
     
