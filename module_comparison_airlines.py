@@ -1,13 +1,17 @@
+### MODULE_COMPARISON_AIRLINES.PY
 
-### MODULE COMPARE AIRLINES
+### This is the compare airlines module. In here you can find several functions:
 
-# import necessary packages
+### - Functions to calculate graph metrics and turn them into a table
+### - A function containing a program for user input and plotting the airlines 
+
+
+#%% Necessary packages for this module
+
 import module_comparison as comp
-import module_visualization_worldmap as worldmap
-
 import networkx as nx
 import pandas as pd
-
+import module_visualization_worldmap as worldmap
 
 
 #%% Network metrics 

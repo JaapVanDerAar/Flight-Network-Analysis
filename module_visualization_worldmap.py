@@ -1,16 +1,20 @@
+### MODULE_VISUALIZATION_WORLDMAP.PY
+
+### This is the visualisation on worldmap module. In here you can find several functions:
+
+### - Functions for creating variables necessary for visualisation
+### - Functions necessary for other visualisation options
+### - Functions to create the visualisation on the worldmap
+### - Functions that include a program for the demo and the visualisation on worldmap
 
 
-# MODULE FOR VISUALIZING FLIGHT NETWORK ON WORLD MAP
-
-
-#%%import necessary packages and tools
-import module_comparison as comp
+#%% Necessary packages for this module
 
 import networkx as nx
+import module_comparison as comp
+from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import numpy as np
-from mpl_toolkits.basemap import Basemap 
-
 
 
 #%% Basic functions 
@@ -35,7 +39,7 @@ def create_pos_variable(df, m):
     # now the parameters G (the graph) and pos (the positions) are set  
     return pos
 
-
+# function to draw the nodes and edges with specific parameters
 def draw_nodes_and_edges(graph, pos, node_size, node_visibility, edge_visibility, ncolor='#F7A538', ecolor='#5EC4B7', ewidth = 2):
     
     # draw the nodes of graph on the map and set other parameters for layout     
@@ -238,7 +242,7 @@ def demo_program(dataframe):
         visualize_on_worldmap(dataframe, node_visibility = 0)
         #node_visibility = 0
     else:
-        print('Sorry, this is not an option, we will use the default settubg: all airlines and airports')
+        print('\nSorry, this is not an option, we will return to the main program')
         
     # visualize demo flight network 
     # worldmap.visualize_on_worldmap(dataframe, directionality)
@@ -278,9 +282,9 @@ def visualisation_worldmap_program(dataframe):
         
         if choice_airlines == '1':
             print('You chose to plot the biggest airlines')
-            map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 50) '))
+            map_number_airlines = int(input('How many of the biggest airlines do you want to plot? (1 to 15) '))
             
-            if 1 <= map_number_airlines <= 50:
+            if 1 <= map_number_airlines <= 15:
                 print(f'You chose to plot the top {map_number_airlines} biggest airlines')
                 
                 
@@ -305,14 +309,17 @@ def visualisation_worldmap_program(dataframe):
                 
 
             else:
-                print('Sorry, this is not an option, we will use the default setting') 
+                print('\nSorry, this is not an option, we will use the default setting: all airports and airlines') 
+
                 
         elif choice_airlines == '2':   
             print('You chose to plot a specific airline based on name')
             
             # create a dataframe with only the in- and outcoming flights of the selected airport through user
             dataframe = comp.define_airline_through_user_input(dataframe)
-            
+          
+        else:
+            print('\nSorry, this is not an option, we will use the default setting: all airports and airlines') 
         
         
     elif map_amount == '3':
@@ -324,8 +331,8 @@ def visualisation_worldmap_program(dataframe):
         
         if choice_airports == '1':
             print('You chose to plot the biggest airports')
-            map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 50) '))
-            if 1 <= map_number_airports <= 50:
+            map_number_airports = int(input('How many of the biggest airports do you want to plot? (1 to 15) '))
+            if 1 <= map_number_airports <= 15:
                 
                 hub_nr = map_number_airports
                 print(f'You chose to plot the top {hub_nr} biggest airports')
@@ -339,7 +346,7 @@ def visualisation_worldmap_program(dataframe):
                 # show barplot of amount of flight routes (edges) per hub airport
                 comp.barplot_from_df(hub_table, x="airport" , y="degree", ylabel="flight routes")
             else:
-                print('Sorry, this is not an option, we will use the default setting') 
+                print('\nSorry, this is not an option, we will use the default setting: all airports and airlines') 
                 
         elif choice_airports == '2':
             print('You chose to plot a specific airport based on name')
@@ -351,7 +358,8 @@ def visualisation_worldmap_program(dataframe):
             dataframe = comp.define_airport_through_user_input(dataframe)
 
     else:
-        print('Sorry, this is not an option, we will use the default setting')                  
+        print('\nSorry, this is not an option, we will use the default setting: all airports and airlines') 
+
 
 
     # 2nd parameter: directed or undirected network
@@ -368,7 +376,7 @@ def visualisation_worldmap_program(dataframe):
         directionality = nx.DiGraph()
         
     else:
-        print('Sorry, this is not an option, we will use the default setting')   
+        print('\nSorry, this is not an option, we will use the default setting: an undirected network')   
     
 
     # 3rd parameter: size of the airports
@@ -392,7 +400,7 @@ def visualisation_worldmap_program(dataframe):
         node_size = node_size_degree(graph)
         
     else:
-        print('Sorry, this is not an option, we will use the default setting')
+        print('\nSorry, this is not an option, we will use the default setting: all same size ')
     
     
     # VISUALIZE FLIGHT NETWORK WITH USER OPTIONS
