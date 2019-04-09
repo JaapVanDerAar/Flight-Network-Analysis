@@ -1,9 +1,10 @@
+
 ### BASE_PREPROCESSING.PY
 
 ### This is preprocessing module. In here you can find several functions:
 
 ### - Functions to read in the files and adjust their column names
-### - Functions to merge the three datasets into one dataframe
+### - Functions to merge the three datasets into one dataframe and clean this dataframe
 
 #%% Necessary packages for this module
 
@@ -11,7 +12,6 @@ import pandas as pd
 
 #%% Functions to load data files
 
-# function to load routes data as dataframe
 def load_data_routes_from_file(file):
     
     # read content into dataframe
@@ -82,10 +82,9 @@ def load_data_airlines_from_file(file):
 
 #%% Functions to merge and clean ataframes
 
-# function to merge dataframes of routes and airlines
 def left_merge_dataframes(df_left, df_right, on):
     
-    # merge dataframes based on the column source airport ID in df_routes and airport ID in df_airports
+    # merge dataframes with a left outer join
     df_merged = pd.merge(df_left, df_right, on=on, how= "left") 
       
     # return merged dataframe to calling code
@@ -96,9 +95,9 @@ def left_merge_dataframes(df_left, df_right, on):
 # function to clean dataframe from destination airports that do not receive incoming flights
 # since we do not have lattitude/longitude data for these airports
     
-# it is possible that after deleting these dest airports from the df, and with that there source airport, 
-# that new dest airports do not have incoming flights. Therefore we check for this in a loop until 
-#there are only dest airports left that receive incoming flights
+# it is possible that after deleting these destination airports from the df, and with that their source airports, 
+# that new destination airports do not have incoming flights. Therefore we check for this in a loop until 
+# there are only destination airports left that receive incoming flights
  
 def clean_dataframe(df):
     
