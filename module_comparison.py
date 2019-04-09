@@ -96,12 +96,6 @@ def specific_airport_df(df, airport):
     return df_specific_airport_clean
 
 
-
-
-
-
-
-
 #%% function to create bar plot from table
     
 def barplot_from_df(table, x, y, ylabel = None):
@@ -113,16 +107,18 @@ def barplot_from_df(table, x, y, ylabel = None):
     
 
 #%% Functions for airlines
-    
-
+#function to create a dataframe for the top airlines    
 def airline_table(dataframe):
+    #ordering the airlines by number of flights 
     df_top_airlines = dataframe['airline IATA code'].value_counts().reset_index()
+    #renaming the second column name 
     df_top_airlines.rename(columns= {'airline IATA code':'flight_routes_nr'}, inplace=True)
+    #renamming the first column name 
     df_top_airlines.rename(columns= {'index':'airline IATA code'}, inplace=True)
     
     return df_top_airlines
 
-
+#function to create a dataframe in which airlines are ordered by flights number and their complete name is displayed 
 def airline_table_name(dataframe):
     df_top_airlines = dataframe['name airline'].value_counts().reset_index()
     df_top_airlines.rename(columns= {'name airline':'flight_routes_nr'}, inplace=True)
@@ -131,7 +127,6 @@ def airline_table_name(dataframe):
     return df_top_airlines
 
 #function to create a dataframe with the selected airline only 
-    
 def take_airlines(dataframe, sel_airline):
     dataframe = dataframe[dataframe['airline IATA code'] == (sel_airline)]
     #airl_selected = only_airl["airline IATA code"].tolist()
@@ -141,12 +136,15 @@ def take_airlines(dataframe, sel_airline):
     return dataframe_clean
 
 
-#function to create a dataframe with the n. of seleced airlines only 
-
+#function to create a dataframe with the n. of seleced airlines only
 def take_nairlines(dataframe, airline_table, number):
+    #take only the first # airlines (amount selected by the user)
     df_airlines = airline_table[:number]
+    #make the previous variable into a list
     airl_list = df_airlines['airline IATA code'].tolist()
+    #create a dataframe of flight only by those airlines
     dataframe = dataframe.loc[dataframe['airline IATA code'].isin(airl_list)]
+    #clean the just created dataframe 
     dataframe_clean = bpp.clean_dataframe(dataframe)
     
     return dataframe_clean 
